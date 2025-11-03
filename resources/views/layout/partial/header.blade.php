@@ -6,10 +6,11 @@
           class="absolute top-0 right-0 hidden p-4 opacity-50 cursor-pointer fas fa-times text-slate-400 xl:hidden"
           sidenav-close></i>
 
-        <img
+  <h1><center><span style="font-family: 'Open Sans', sans-serif;">DISTRO 1964</span></center></h1>
+        {{-- <img
           src="{{ asset('assets/img/logo.jpg') }}"
           class="w-16 h-auto mx-auto transition-all duration-300 ease-in-out"
-          alt="Logo" />
+          alt="Logo" /> --}}
       </div>
 
     </div>
@@ -74,7 +75,7 @@
           <li class="mt-0.5 w-full">
             <a
               class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href=""> <!-- arahkan ke route bahan -->
+              href="{{route('materials.index')}}"> <!-- arahkan ke route bahan -->
               <div
                 class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
                 <i class="fa-solid fa-boxes-stacked"></i>

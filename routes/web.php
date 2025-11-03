@@ -1,8 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\MaterialController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -15,6 +16,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
 
+Route::resource('materials', MaterialController::class);
 
 Route::get('/sign-up', [AuthController::class, 'showSignUp'])->name('sign-up.form');
 Route::post('/sign-up', [AuthController::class, 'signUp'])->name('sign-up');
