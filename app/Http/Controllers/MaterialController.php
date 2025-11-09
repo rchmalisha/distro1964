@@ -31,6 +31,7 @@ class MaterialController extends Controller
         ]);
 
         Material::create([
+            'kode_bahan' => $request->kode_bahan,
             'nama_bahan' => $request->nama_bahan,
             'kategori_bahan' => $request->kategori_bahan,
             'harga_bahan' => $request->harga_bahan,
