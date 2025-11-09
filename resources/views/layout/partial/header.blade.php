@@ -1,31 +1,37 @@
     <!-- sidenav  -->
     <aside
+      x-data
       class="max-w-62.5 ease-nav-brand z-990 fixed inset-y-0 my-0 h-screen ml-4 block w-full -translate-x-full flex-wrap items-center justify-between overflow-y-auto rounded-2xl border-0 bg-white p-0 antialiased shadow-none transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent">
       <div class="flex justify-center items-center py-6">
         <i
           class="absolute top-0 right-0 hidden p-4 opacity-50 cursor-pointer fas fa-times text-slate-400 xl:hidden"
           sidenav-close></i>
 
-          <h1>distro 1964</h1>
+  <h1><center><span style="font-family: 'Open Sans', sans-serif;">DISTRO 1964</span></center></h1>
         {{-- <img
           src="{{ asset('assets/img/logo.jpg') }}"
           class="w-16 h-auto mx-auto transition-all duration-300 ease-in-out"
           alt="Logo" /> --}}
       </div>
 
-    </div>
+      </div>
 
       <hr
         class="h-px mt-0 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent" />
 
       <div
-        class="items-center block w-auto h-[calc(100vh-80px)] overflow-y-auto grow basis-full">        <ul class="flex flex-col pl-0 mb-0">
+        class="items-center block w-auto h-[calc(100vh-80px)] overflow-y-auto grow basis-full">
+        <ul class="flex flex-col pl-0 mb-0">
           <li class="mt-0.5 w-full">
+            @php $isDashboard = request()->routeIs('dashboard'); @endphp
             <a
-              class="py-2.7 shadow-soft-xl text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap rounded-lg bg-white px-4 font-semibold text-slate-700 transition-colors"
-              href="{{route('dashboard')}}">
+              href="{{ route('dashboard') }}"
+              class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap rounded-lg px-4 transition-colors
+                {{ $isDashboard ? 'bg-white text-slate-700 shadow-soft-xl font-bold' : 'bg-transparent text-slate-500 font-normal' }}
+                hover:bg-white hover:text-slate-700 hover:shadow-soft-xl">
               <div
-                class="bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+                class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5
+                   {{ $isDashboard ? 'bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl text-white' : 'shadow-soft-2xl bg-white text-slate-500' }}">
                 <svg
                   width="12px"
                   height="12px"
@@ -41,7 +47,7 @@
                     fill-rule="evenodd">
                     <g
                       transform="translate(-1716.000000, -439.000000)"
-                      fill="#FFFFFF"
+                      fill="currentColor"
                       fill-rule="nonzero">
                       <g transform="translate(1716.000000, 291.000000)">
                         <g transform="translate(0.000000, 148.000000)">
@@ -58,9 +64,7 @@
                 </svg>
               </div>
               <span
-                class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft"
-                >Dashboard</span
-              >
+                class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Dashboard</span>
             </a>
           </li>
 
@@ -75,7 +79,7 @@
           <li class="mt-0.5 w-full">
             <a
               class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href=""> <!-- arahkan ke route bahan -->
+              href="{{route('materials.index')}}"> <!-- arahkan ke route bahan -->
               <div
                 class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
                 <i class="fa-solid fa-boxes-stacked"></i>
@@ -101,7 +105,7 @@
           </li>
 
           <!-- Pembelian Section -->
-                    <li class="w-full mt-4">
+          <li class="w-full mt-4">
             <h6
               class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">
               Pembelian
@@ -181,11 +185,15 @@
           </li>
 
           <li class="mt-0.5 w-full">
+            @php $isAccounts = request()->routeIs('accounts.*'); @endphp
             <a
-              class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href="/"> <!-- arahkan ke route daftar akun -->
+              href="{{ route('accounts.index') }}"
+              class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+                {{ $isAccounts ? 'bg-white text-slate-700 shadow-soft-xl font-bold' : 'bg-transparent text-slate-500 font-normal' }}
+                hover:bg-white hover:text-slate-700 hover:shadow-soft-xl"> <!-- arahkan ke route daftar akun -->
               <div
-                class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
+                class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center text-center xl:p-2.5
+                  {{ $isAccounts ? 'bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl text-white' : 'shadow-soft-2xl bg-white text-slate-500' }}">
                 <i class="fa-solid fa-list"></i>
               </div>
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">
@@ -197,9 +205,27 @@
           <li class="mt-0.5 w-full">
             <a
               class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href="/"> <!-- arahkan ke route jurnal umum -->
+              href=""> <!-- arahkan ke route aset tetap -->
               <div
                 class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
+                <i class="fa-solid fa-building"></i>
+              </div>
+              <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">
+                Aset Tetap
+              </span>
+            </a>
+          </li>
+
+          <li class="mt-0.5 w-full">
+            @php $isJournal = request()->routeIs('journal.*'); @endphp
+            <a
+              href="{{ route('journal.index') }}"
+              class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+                {{ $isJournal ? 'bg-white text-slate-700 shadow-soft-xl font-bold' : 'bg-transparent text-slate-500 font-normal' }}
+                hover:bg-white hover:text-slate-700 hover:shadow-soft-xl"> <!-- arahkan ke route jurnal umum -->
+              <div
+                class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center text-center xl:p-2.5
+                  {{ $isJournal ? 'bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl text-white' : 'shadow-soft-2xl bg-white text-slate-500' }}">
                 <i class="fa-solid fa-file-pen"></i>
               </div>
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">
@@ -209,11 +235,15 @@
           </li>
 
           <li class="mt-0.5 w-full">
+            @php $isLedger = request()->routeIs('ledger.*'); @endphp
             <a
-              class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href=""> <!-- arahkan ke route buku besar -->
+              href="{{ route('ledger.index') }}"
+              class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+                {{ $isLedger ? 'bg-white text-slate-700 shadow-soft-xl font-bold' : 'bg-transparent text-slate-500 font-normal' }}
+                hover:bg-white hover:text-slate-700 hover:shadow-soft-xl"> <!-- arahkan ke route buku besar -->
               <div
-                class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
+                class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center text-center xl:p-2.5
+                  {{ $isLedger ? 'bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl text-white' : 'shadow-soft-2xl bg-white text-slate-500' }} group-hover:bg-gradient-to-tl group-hover:from-purple-700 group-hover:to-pink-500 group-hover:text-white">
                 <i class="fa-solid fa-book-open"></i>
               </div>
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">
@@ -223,11 +253,15 @@
           </li>
 
           <li class="mt-0.5 w-full">
+            @php $isTrial = request()->routeIs('trial-balance.*'); @endphp
             <a
-              class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href="/"> <!-- arahkan ke route neraca saldo -->
+              href="{{ route('trial-balance.index') }}"
+              class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+                {{ $isTrial ? 'bg-white text-slate-700 shadow-soft-xl font-bold' : 'bg-transparent text-slate-500 font-normal' }}
+                hover:bg-white hover:text-slate-700 hover:shadow-soft-xl"> <!-- arahkan ke route neraca saldo -->
               <div
-                class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
+                class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center text-center xl:p-2.5
+                  {{ $isTrial ? 'bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl text-white' : 'shadow-soft-2xl bg-white text-slate-500' }} group-hover:bg-gradient-to-tl group-hover:from-purple-700 group-hover:to-pink-500 group-hover:text-white">
                 <i class="fa-solid fa-table-columns"></i>
               </div>
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">
