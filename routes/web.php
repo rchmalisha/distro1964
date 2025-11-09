@@ -1,8 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ServiceController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -24,3 +25,7 @@ Route::post('/sign-in', [AuthController::class, 'signIn'])->name('sign-in');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// ======== FITUR DATA JASA ========
+Route::middleware('auth')->group(function () {
+    Route::resource('services', ServiceController::class);
+});

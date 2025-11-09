@@ -10,6 +10,7 @@
     <link rel="icon" type="image/png" href="./assets/img/favicon.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <title>Distro 1964 - @yield('title')</title>
+    @vite('resources/css/app.css', 'resources/js/app.js')
     @include('layout.partial.link')
     <!-- Nepcha Analytics (nepcha.com) -->
     <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->

@@ -6,10 +6,11 @@
           class="absolute top-0 right-0 hidden p-4 opacity-50 cursor-pointer fas fa-times text-slate-400 xl:hidden"
           sidenav-close></i>
 
-        <img
+          <h1>distro 1964</h1>
+        {{-- <img
           src="{{ asset('assets/img/logo.jpg') }}"
           class="w-16 h-auto mx-auto transition-all duration-300 ease-in-out"
-          alt="Logo" />
+          alt="Logo" /> --}}
       </div>
 
     </div>
@@ -18,7 +19,7 @@
         class="h-px mt-0 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent" />
 
       <div
-      class="items-center block w-auto h-[calc(100vh-80px)] overflow-y-auto grow basis-full">        <ul class="flex flex-col pl-0 mb-0">
+        class="items-center block w-auto h-[calc(100vh-80px)] overflow-y-auto grow basis-full">        <ul class="flex flex-col pl-0 mb-0">
           <li class="mt-0.5 w-full">
             <a
               class="py-2.7 shadow-soft-xl text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap rounded-lg bg-white px-4 font-semibold text-slate-700 transition-colors"
@@ -88,7 +89,7 @@
           <li class="mt-0.5 w-full">
             <a
               class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href="/"> <!-- arahkan ke route produk/jasa -->
+              href="{{ route('services.index') }}"> <!-- arahkan ke route produk/jasa -->
               <div
                 class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
                 <i class="fa-solid fa-box-open"></i>
