@@ -14,12 +14,18 @@ class OrderController extends Controller
 {
     public function index()
     {
+        $orders = Order::with('customer')->orderBy('tgl_pesan', 'desc')->get();
+        return view('orders.index', compact('orders'));
+    }
+
+    public function create()
+    {
         $orders = Order::with(['customer', 'detailOrders.service', 'detailOrders.material'])->get();
         $customers = Customer::all();
         $services = Service::all();
         $materials = Material::all();
 
-        return view('orders.index', compact('orders', 'customers', 'services', 'materials'));
+        return view('orders.create', compact('orders', 'customers', 'services', 'materials'));
     }
 
     public function store(Request $request)
@@ -71,7 +77,7 @@ class OrderController extends Controller
                 'potongan_harga' => $request->potongan_harga,
                 'total_akhir' => $request->total_akhir,
                 'upload_file' => $request->file('upload_file')
-                    ? $request->file('upload_file')->store('uploads')
+                    ? $request->file('upload_file')->store('uploads', 'public')
                     : null,
                 'keterangan' => $request->keterangan,
             ]);
@@ -106,5 +112,17 @@ class OrderController extends Controller
         $order->delete();
 
         return redirect()->back()->with('success', 'Order berhasil dihapus.');
+    }
+
+    public function show($id)
+    {
+        $order = Order::with(['customer', 'detailOrders.service', 'detailOrders.material'])->findOrFail($id);
+        return view('orders.show', compact('order'));
+    }
+
+    public function print($id)
+    {
+        $order = Order::with(['customer', 'detailOrders.service', 'detailOrders.material'])->findOrFail($id);
+        return view('orders.print', compact('order')); // tampilan versi print
     }
 }

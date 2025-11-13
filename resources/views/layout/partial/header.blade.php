@@ -93,13 +93,13 @@
           <li class="mt-0.5 w-full">
             <a
               class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href="{{ route('services.index') }}"> <!-- arahkan ke route produk/jasa -->
+              href="{{ route('services.index') }}"> <!-- arahkan ke route barang/jasa -->
               <div
                 class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
                 <i class="fa-solid fa-box-open"></i>
               </div>
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">
-                Produk/Jasa
+                Barang Jasa
               </span>
             </a>
           </li>
@@ -165,7 +165,7 @@
           <li class="mt-0.5 w-full">
             <a
               class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href="/"> <!-- arahkan ke route penjualan -->
+              href="{{route('sales.index')}}"> <!-- arahkan ke route penjualan -->
               <div
                 class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
                 <i class="fa-solid fa-dollar-sign"></i>

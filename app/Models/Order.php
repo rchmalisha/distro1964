@@ -16,7 +16,7 @@ class Order extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'pelanggan_id', 'id');
     }
 
     public function detailOrders()
