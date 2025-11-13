@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\DetailOrder;
 use App\Models\Service;
-use App\Models\Material;
 use App\Models\Customer;
+use App\Models\Material;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\MaterialNeedsController;
 
 class OrderController extends Controller
 {
@@ -90,6 +91,8 @@ class OrderController extends Controller
                         'subtotal' => $detail['subtotal'] ?? 0,
                     ]);
                 }
+                app(MaterialNeedsController::class)
+                ->storeFromOrder($kodePesan);
             }
 
             DB::commit();
