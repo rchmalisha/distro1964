@@ -15,8 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('kode_pesan')->unique();
             $table->foreignId('pelanggan_id')->constrained('customers')->onDelete('cascade');
+            $table->date('tgl_pesan');
+            $table->date('tgl_ambil');
             $table->decimal('total_harga', 15, 2);
-            $table->decimal('biaya_jasa', 15, 2)->nullable();
+            $table->decimal('biaya_lainnya', 15, 2)->nullable();
+            $table->decimal('potongan_harga', 15, 2)->nullable();
             $table->decimal('total_akhir', 15, 2);
             $table->string('upload_file')->nullable();
             $table->text('keterangan')->nullable();

@@ -10,9 +10,11 @@ class DetailOrder extends Model
     use HasFactory;
 
     protected $fillable = [
-        'kode_pesan', 'kode_jasa', 'kode_bahan', 
-        'ukuran_bahan', 'jumlah_bahan', 'harga_satuan', 'subtotal'
+        'kode_pesan', 'kode_jasa', 'kode_bahan',
+        'ukuran_panjang', 'ukuran_lebar',
+        'jumlah_bahan', 'harga_satuan', 'subtotal'
     ];
+    
     public function service()
     {
         return $this->belongsTo(Service::class, 'kode_jasa', 'kode_jasa');

@@ -10,8 +10,8 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'kode_pesan', 'pelanggan_id', 'total_harga', 
-        'biaya_jasa', 'total_akhir', 'upload_file', 'keterangan'
+        'kode_pesan', 'pelanggan_id', 'tgl_pesan', 'tgl_ambil', 'total_harga', 
+        'biaya_lainnya', 'potongan_harga', 'total_akhir', 'upload_file', 'keterangan'
     ];
 
     public function customer()

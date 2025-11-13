@@ -152,12 +152,23 @@
                 </div>
 
                 <div class="flex justify-between items-center">
-                    <span class="text-gray-700 font-medium">Biaya Jasa:</span>
+                    <span class="text-gray-700 font-medium">Biaya Lainnya:</span>
                     <div class="flex items-center gap-2">
-                    <input type="text" id="biayaJasaDisplay"
+                    <input type="text" id="biayaLainnyaDisplay"
                             class="w-40 text-right border-gray-300 rounded-lg p-2 text-sm"
-                            oninput="formatBiayaJasa(this)">
-                    <input type="hidden" name="biaya_jasa" id="biayaJasaInput" value="0">
+                            oninput="formatBiayaLainnya(this)">
+                    <input type="hidden" name="biaya_lainnya" id="biayaLainnyaInput" value="0">
+                    </div>
+                </div>
+
+                <!-- 🔹 Potongan Harga -->
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-700 font-medium">Potongan Harga:</span>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="potonganDisplay"
+                            class="w-40 text-right border-gray-300 rounded-lg p-2 text-sm"
+                            oninput="formatPotongan(this)">
+                        <input type="hidden" name="potongan_harga" id="potonganInput" value="0">
                     </div>
                 </div>
 
@@ -219,14 +230,20 @@ function addRow() {
             </select>
         </td>
         <td class="px-2 py-2">
-            <input type="text" name="detail_orders[${rowIndex}][ukuran_bahan]" class="w-full border-gray-300 rounded-lg p-2 text-sm text-center">
+            <div class="flex items-center gap-1">
+                <input type="number" step="0.01" name="detail_orders[${rowIndex}][ukuran_panjang]" 
+                    placeholder="P" class="w-16 border-gray-300 rounded-lg p-1 text-sm text-center" min="0">
+                <span>x</span>
+                <input type="number" step="0.01" name="detail_orders[${rowIndex}][ukuran_lebar]" 
+                    placeholder="L" class="w-16 border-gray-300 rounded-lg p-1 text-sm text-center" min="0">
+            </div>
         </td>
         <td class="px-2 py-2 text-center">
             <input type="number" name="detail_orders[${rowIndex}][jumlah_bahan]" class="w-24 border-gray-300 rounded-lg p-2 text-sm text-center" oninput="updateSubtotal(this)">
         </td>
         <td class="px-2 py-2 text-center">
             <input type="text" name="detail_orders[${rowIndex}][harga_satuan_display]" 
-                class="harga-satuan-display w-28 border-gray-300 rounded-lg p-2 text-sm text-center">
+                class="harga-satuan-display w-28 border-gray-300 rounded-lg p-2 text-sm text-center" oninput="updateHargaSatuan(this)">
             <input type="hidden" name="detail_orders[${rowIndex}][harga_satuan]" 
                 class="harga-satuan-hidden" value="0">
         </td>
@@ -258,6 +275,21 @@ document.addEventListener('change', function (e) {
         updateSubtotal(row);
     }
 });
+
+// 🔹 Fungsi agar harga bisa diubah manual dan tetap sinkron
+function updateHargaSatuan(input) {
+    const row = input.closest('tr');
+    const hidden = row.querySelector('.harga-satuan-hidden');
+
+    // Ambil angka tanpa karakter non-digit
+    const value = input.value.replace(/[^0-9]/g, '');
+    hidden.value = value ? parseFloat(value) : 0;
+
+    // Format ulang tampilan jadi rupiah
+    input.value = formatRupiah(hidden.value);
+
+    updateSubtotal(row);
+}
 
 document.addEventListener('input', function(e) {
     // Ketika jumlah diubah
@@ -315,19 +347,29 @@ function hitungTotalHarga() {
     updateTotalAkhir();
 }
 
-// --- Biaya Jasa (format & hitung total akhir) ---
-function formatBiayaJasa(input) {
+// --- Biaya Lainnya (format & hitung total akhir) ---
+function formatBiayaLainnya(input) {
   input.value = formatRupiah(input.value);
   const parsed = parseRupiah(input.value);
-  document.getElementById('biayaJasaInput').value = parsed;
+  document.getElementById('biayaLainnyaInput').value = parsed;
   updateTotalAkhir();
 }
 
-// --- Total Akhir = Total Harga (dari tabel) + Biaya Jasa ---
+// --- Potongan Harga (format & hitung total akhir) ---
+function formatPotongan(input) {
+  input.value = formatRupiah(input.value);
+  const parsed = parseRupiah(input.value);
+  document.getElementById('potonganInput').value = parsed;
+  updateTotalAkhir();
+}
+
+// --- Total Akhir = Total Harga (dari tabel) + Biaya Lainnya ---
 function updateTotalAkhir() {
   const totalHarga = parseFloat(document.getElementById('totalHargaInput').value) || 0;
-  const biayaJasa = parseFloat(document.getElementById('biayaJasaInput').value) || 0;
-  const totalAkhir = totalHarga + biayaJasa;
+  const biayaLainnya = parseFloat(document.getElementById('biayaLainnyaInput').value) || 0;
+  const potongan = parseFloat(document.getElementById('potonganInput').value) || 0;
+
+  const totalAkhir = totalHarga + biayaLainnya - potongan;
 
   document.getElementById('totalAkhirInput').value = totalAkhir;
   document.getElementById('totalAkhirDisplay').textContent = formatRupiah(totalAkhir);

@@ -39,8 +39,6 @@ class OrderController extends Controller
             $customer = Customer::create([
                 'nama_cus' => $request->nama_cus,
                 'no_telp' => $request->no_telp,
-                'tgl_pesan' => $request->tgl_pesan,
-                'tgl_ambil' => $request->tgl_ambil,
             ]);
 
             // 2️⃣ Buat kode pesan unik
@@ -66,8 +64,11 @@ class OrderController extends Controller
             $order = Order::create([
                 'kode_pesan' => $kodePesan,
                 'pelanggan_id' => $customer->id, // 🔥 disesuaikan dengan migration
+                'tgl_pesan' => $request->tgl_pesan,
+                'tgl_ambil' => $request->tgl_ambil,
                 'total_harga' => $request->total_harga,
-                'biaya_jasa' => $request->biaya_jasa,
+                'biaya_lainnya' => $request->biaya_lainnya,
+                'potongan_harga' => $request->potongan_harga,
                 'total_akhir' => $request->total_akhir,
                 'upload_file' => $request->file('upload_file')
                     ? $request->file('upload_file')->store('uploads')
@@ -82,7 +83,8 @@ class OrderController extends Controller
                         'kode_pesan' => $kodePesan,
                         'kode_jasa' => $detail['kode_jasa'] ?? null,
                         'kode_bahan' => $detail['kode_bahan'] ?? null,
-                        'ukuran_bahan' => $detail['ukuran_bahan'] ?? '',
+                        'ukuran_panjang' => $detail['ukuran_panjang'] ?? '',
+                        'ukuran_lebar' => $detail['ukuran_lebar'] ?? '',
                         'jumlah_bahan' => $detail['jumlah_bahan'] ?? 0,
                         'harga_satuan' => $detail['harga_satuan'] ?? 0,
                         'subtotal' => $detail['subtotal'] ?? 0,
