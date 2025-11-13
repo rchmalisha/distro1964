@@ -8,6 +8,7 @@ use App\Http\Controllers\SalesController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\MaterialNeedsController;
 use App\Http\Controllers\TrialBalanceController;
 use App\Http\Controllers\GeneralLedgerController;
 use App\Http\Controllers\GeneralJournalController;
@@ -47,6 +48,8 @@ Route::get('/trial-balance', [TrialBalanceController::class, 'index'])->name('tr
 // ======== FITUR DATA JASA ========
 Route::middleware('auth')->group(function () {
     Route::resource('services', ServiceController::class);
+    // Kebutuhan bahan (material needs)
+    Route::resource('materialneeds', MaterialNeedsController::class)->only(['index']);
 });
 
 
