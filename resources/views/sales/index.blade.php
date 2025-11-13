@@ -1,12 +1,12 @@
 @extends('layout.main')
-@section('title', 'Data Jasa')
+@section('title', 'Pemesanan Produk dan Jasa')
 
 @section('content')
 <div class="w-full px-6 py-6 mx-auto">
 <!-- Card Utama -->
 <div class="bg-white shadow-lg rounded-2xl p-6 border border-slate-200">
   <div class="flex justify-between items-center mb-6">
-    <h6 class="text-2xl font-bold text-slate-700">Data Jasa</h6>
+    <h6 class="text-2xl font-bold text-slate-700">Pemesanan Produk dan Jasa</h6>
   </div>
 
   {{-- Button: Tambah Jasa (opens modal) --}}
@@ -303,5 +303,21 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTable();
 });
 </script>
+
+{{-- ✅ Notifikasi SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if (session('success'))
+<script>
+Swal.fire({
+  toast: true,
+  icon: 'success',
+  title: '{{ session('success') }}',
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+});
+</script>
+@endif
 
 @endsection

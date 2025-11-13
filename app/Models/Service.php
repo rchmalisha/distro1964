@@ -18,4 +18,8 @@ class Service extends Model
         'kategori_jasa',
         'harga',
     ];
+    public function detailOrders()
+    {
+        return $this->hasMany(DetailOrder::class, 'kode_jasa', 'kode_jasa');
+    }
 }
