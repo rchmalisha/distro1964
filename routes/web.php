@@ -3,12 +3,13 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\GeneralJournalController;
-use App\Http\Controllers\GeneralLedgerController;
-use App\Http\Controllers\TrialBalanceController;
-use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\TrialBalanceController;
+use App\Http\Controllers\GeneralLedgerController;
+use App\Http\Controllers\GeneralJournalController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -45,4 +46,17 @@ Route::get('/trial-balance', [TrialBalanceController::class, 'index'])->name('tr
 // ======== FITUR DATA JASA ========
 Route::middleware('auth')->group(function () {
     Route::resource('services', ServiceController::class);
+});
+
+
+// ======== FITUR ORDER & DETAIL ORDER ========
+Route::middleware('auth')->group(function () {
+    // CRUD utama untuk Order
+    Route::resource('orders', OrderController::class);
+
+    // Tambahan untuk kelola detail order (ajax/modal)
+    Route::get('orders/{order}/details', [OrderController::class, 'showDetails'])->name('orders.details');
+    Route::post('orders/{order}/details', [OrderController::class, 'storeDetail'])->name('orders.details.store');
+    Route::put('orders/{order}/details/{detail}', [OrderController::class, 'updateDetail'])->name('orders.details.update');
+    Route::delete('orders/{order}/details/{detail}', [OrderController::class, 'destroyDetail'])->name('orders.details.destroy');
 });

@@ -49,6 +49,35 @@
   {{-- Section for page modals (so modals render at end of body and fixed positioning works) --}}
   @yield('modals')
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  @if (session('success'))
+  <script>
+  Swal.fire({
+      icon: 'success',
+      title: 'Berhasil!',
+      text: @json(session('success')),
+      showConfirmButton: true,
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#3085d6',
+      timer: 3500,
+      timerProgressBar: true,
+  });
+  </script>
+  @endif
+
+  @if (session('error'))
+  <script>
+  Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: @json(session('error')),
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#d33',
+  });
+  </script>
+  @endif
+
 </body>
 
 </html>

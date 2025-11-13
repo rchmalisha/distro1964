@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class ServiceController extends Controller
 {
     // Menampilkan semua data jasa
-     public function index()
+    public function index()
     {
         $services = Service::all();
 
@@ -24,24 +24,6 @@ class ServiceController extends Controller
 
         return view('services.index', compact('services', 'newCode'));
     }
-
-    // Menampilkan form tambah jasa
-    // public function create()
-    // {
-    //     // Ambil kode terakhir dari database
-    //     $lastService = Service::orderBy('kode_jasa', 'desc')->first();
-
-    //     // Tentukan kode baru
-    //     if (!$lastService) {
-    //         $newCode = 'SE-001';
-    //     } else {
-    //         $lastNumber = (int) substr($lastService->kode_jasa, 3);
-    //         $newCode = 'SE-' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
-    //     }
-
-    //     return view('services.create', compact('newCode'));
-    // }
-
 
     // Menyimpan data jasa baru
     public function store(Request $request)
