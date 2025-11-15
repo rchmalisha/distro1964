@@ -12,6 +12,7 @@ use App\Http\Controllers\MaterialNeedsController;
 use App\Http\Controllers\TrialBalanceController;
 use App\Http\Controllers\GeneralLedgerController;
 use App\Http\Controllers\GeneralJournalController;
+use App\Http\Controllers\PurchasingController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -31,6 +32,7 @@ Route::post('/sign-up', [AuthController::class, 'signUp'])->name('sign-up');
 
 Route::get('/sign-in', [AuthController::class, 'showSignIn'])->name('sign-in.form');
 Route::post('/sign-in', [AuthController::class, 'signIn'])->name('sign-in');
+Route::redirect('/login', '/sign-in')->name('login');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -76,3 +78,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/sales/cetak_nota/{kode_jual}', [SalesController::class, 'print'])->name('sales.print');
 
 });
+
+Route::post('/purchasing/create-from-need', [App\Http\Controllers\PurchasingController::class, 'createFromNeed'])->name('purchasing.createFromNeed');
+
+Route::resource('purchasing', App\Http\Controllers\PurchasingController::class);
