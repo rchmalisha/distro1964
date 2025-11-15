@@ -1,12 +1,12 @@
 @extends('layout.main')
-@section('title', 'Data Jasa')
+@section('title', 'Data Barang Jasa')
 
 @section('content')
 <div class="w-full px-6 py-6 mx-auto">
 <!-- Card Utama -->
 <div class="bg-white shadow-lg rounded-2xl p-6 border border-slate-200">
   <div class="flex justify-between items-center mb-6">
-    <h6 class="text-2xl font-bold text-slate-700">Data Jasa</h6>
+    <h6 class="text-2xl font-bold text-slate-700">Data Barang Jasa</h6>
   </div>
 
   {{-- Button: Tambah Jasa (opens modal) --}}
@@ -14,7 +14,7 @@
     <div>
       <button id="openAddBtn" type="button"
         class="bg-slate-700 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition">
-        + Tambah Jasa
+        + Tambah Barang Jasa
       </button>
     </div>
   </div>
@@ -49,7 +49,7 @@
                   value="{{ $newCode }}" readonly>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">Nama Jasa</label>
+            <label class="block text-sm font-medium mb-1">Nama Barang</label>
             <input type="text" name="nama_jasa" id="nama_jasa" class="w-full border rounded-lg px-3 py-2" required>
           </div>
           <div>
@@ -110,8 +110,8 @@
         <thead class="bg-slate-100 text-xs uppercase font-semibold">
           <tr>
             <th class="px-6 py-3 border border-slate-200 text-left cursor-pointer" onclick="sortTable(0)">Kode Jasa</th>
-            <th class="px-6 py-3 border border-slate-200 text-left cursor-pointer" onclick="sortTable(1)">Nama Jasa</th>
-            <th class="px-6 py-3 border border-slate-200 text-left cursor-pointer" onclick="sortTable(2)">Kategori</th>
+            <th class="px-6 py-3 border border-slate-200 text-left cursor-pointer" onclick="sortTable(1)">Nama Barang</th>
+            <th class="px-6 py-3 border border-slate-200 text-left cursor-pointer" onclick="sortTable(2)">Kategori Jasa</th>
             <th class="px-6 py-3 border border-slate-200 text-center cursor-pointer" onclick="sortTable(3)">Harga</th>
             <th class="px-6 py-3 border border-slate-200 text-center">Aksi</th>
           </tr>

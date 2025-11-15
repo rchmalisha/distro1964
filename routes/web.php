@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\MaterialController;
@@ -60,10 +61,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('orders', OrderController::class);
 
     // Tambahan untuk kelola detail order (ajax/modal)
-    Route::get('orders/{order}/details', [OrderController::class, 'showDetails'])->name('orders.details');
+    Route::get('orders/{order}/details', [OrderController::class, 'showDetails'])->name('orders.show');
+    Route::get('orders/{order}/cetak', [OrderController::class, 'print'])->name('orders.print');
     Route::post('orders/{order}/details', [OrderController::class, 'storeDetail'])->name('orders.details.store');
     Route::put('orders/{order}/details/{detail}', [OrderController::class, 'updateDetail'])->name('orders.details.update');
     Route::delete('orders/{order}/details/{detail}', [OrderController::class, 'destroyDetail'])->name('orders.details.destroy');
+});
+
+// ======== FITUR DATA PESANAN ========
+Route::middleware('auth')->group(function () {
+    Route::resource('sales', SalesController::class);
 });
 
 Route::post('/purchasing/create-from-need', [App\Http\Controllers\PurchasingController::class, 'createFromNeed'])->name('purchasing.createFromNeed');
