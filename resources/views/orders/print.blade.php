@@ -115,6 +115,7 @@
 
         <!-- Judul Nota Pesanan -->
         <h2 style="margin:5px 0; font-size:14px; font-weight:bold; text-decoration:underline;">NOTA PESANAN</h2>
+        <p style="margin:2px 0; font-size:11px; color:#555;">{{ $order->kode_pesan }}</p>
     </div>
 
 
@@ -123,7 +124,6 @@
         <tr>
             <!-- Kolom kiri -->
             <td>
-                <p><strong>Kode Pesanan:</strong> {{ $order->kode_pesan }}</p>
                 <p><strong>Nama Pelanggan:</strong> {{ $order->customer->nama_cus }}</p>
                 <p><strong>No.Telepon:</strong> {{ $order->customer->no_telp }}</p>
             </td>
@@ -153,7 +153,7 @@
                 @foreach ($order->detailOrders as $index => $detail)
                 <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td class="text-left">{{ $detail->service->nama_jasa ?? $detail->material->nama_material ?? '-' }}</td>
+                    <td class="text-left">{{ $detail->service->nama_barang ?? $detail->material->nama_material ?? '-' }}</td>
                     <td>
                         @php
                             $p = $detail->ukuran_panjang ?? null;
@@ -171,7 +171,7 @@
                             -
                         @endif
                     </td>
-                    <td>{{ $detail->jumlah_bahan }}</td>
+                    <td>{{ $detail->jumlah_pesan }}</td>
                     <td class="text-right">Rp {{ number_format($detail->harga_satuan,0,',','.') }}</td>
                     <td class="text-right">Rp {{ number_format($detail->subtotal,0,',','.') }}</td>
                 </tr>

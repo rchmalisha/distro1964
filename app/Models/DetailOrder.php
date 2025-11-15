@@ -12,7 +12,7 @@ class DetailOrder extends Model
     protected $fillable = [
         'kode_pesan', 'kode_jasa', 'kode_bahan',
         'ukuran_panjang', 'ukuran_lebar',
-        'jumlah_bahan', 'harga_satuan', 'subtotal'
+        'jumlah_pesan', 'harga_satuan', 'subtotal'
     ];
     
     public function service()

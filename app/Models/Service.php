@@ -14,7 +14,7 @@ class Service extends Model
 
      protected $fillable = [
         'kode_jasa',
-        'nama_jasa',
+        'nama_barang',
         'kategori_jasa',
         'harga',
     ];

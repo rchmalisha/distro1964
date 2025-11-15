@@ -38,18 +38,18 @@ class MaterialNeedsController extends Controller
         foreach ($details as $detail) {
             $panjang_m = $detail->ukuran_panjang/100;
             $lebar_m = $detail->ukuran_lebar/100;
-            $luas_total = $panjang_m * $lebar_m * $detail->jumlah_bahan;
+            $luas_total = $panjang_m * $lebar_m * $detail->jumlah_pesan;
             $waste = 0.1;
             $total_dgn_waste = $luas_total * (1 + $waste);
 
             MaterialNeeds::create([
                 'kode_pesan' => $detail->kode_pesan,
                 'kode_bahan' => $detail->kode_bahan,
-                'jenis_jasa' => $detail->service->nama_jasa ?? '-',
+                'jenis_jasa' => $detail->service->nama_barang ?? '-',
                 'jenis_bahan' => $detail->material->kategori_bahan ?? '-',
                 'ukuran_panjang' => $detail->ukuran_panjang,
                 'ukuran_lebar' => $detail->ukuran_lebar,
-                'jumlah_pesanan' => $detail->jumlah_bahan,
+                'jumlah_pesanan' => $detail->jumlah_pesan,
                 'waste_persen' => 10,
                 'kebutuhan_bahan_meter' => $total_dgn_waste,
                 'tgl_pesan' => $detail->order->tgl_pesan,

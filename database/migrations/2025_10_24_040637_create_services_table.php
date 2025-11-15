@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->string('kode_jasa')->primary();
-            $table->string('nama_jasa');
+            $table->string('nama_barang');
             $table->string('kategori_jasa');
             $table->decimal('harga', 15, 2);
             $table->timestamps();

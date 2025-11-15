@@ -50,7 +50,7 @@
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">Nama Barang</label>
-            <input type="text" name="nama_jasa" id="nama_jasa" class="w-full border rounded-lg px-3 py-2" required>
+            <input type="text" name="nama_barang" id="nama_barang" class="w-full border rounded-lg px-3 py-2" required>
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">Kategori Jasa</label>
@@ -120,13 +120,13 @@
           @forelse($services as $index => $service)
           <tr class="border-b hover:bg-slate-50">
             <td class="px-6 py-3 border border-slate-200">{{ $service->kode_jasa }}</td>
-            <td class="px-6 py-3 border border-slate-200">{{ $service->nama_jasa }}</td>
+            <td class="px-6 py-3 border border-slate-200">{{ $service->nama_barang }}</td>
             <td class="px-6 py-3 border border-slate-200">{{ $service->kategori_jasa }}</td>
             <td class="px-6 py-3 border border-slate-200 text-center">Rp {{ number_format($service->harga, 0, ',', '.') }}</td>
             <td class="px-6 py-3 border border-slate-200 text-center">
               <button type="button"
                 class="text-blue-500 hover:text-blue-700"
-                onclick="editService('{{ $service->kode_jasa }}', '{{ $service->nama_jasa }}', '{{ $service->kategori_jasa }}', '{{ $service->harga }}')">
+                onclick="editService('{{ $service->kode_jasa }}', '{{ $service->nama_barang }}', '{{ $service->kategori_jasa }}', '{{ $service->harga }}')">
                 Edit
               </button>
               |
@@ -291,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
     formMethod.value = 'PUT';
     document.getElementById('kode_jasa').value = kode;
     document.getElementById('kode_jasa').readOnly = true;
-    document.getElementById('nama_jasa').value = nama;
+    document.getElementById('nama_barang').value = nama;
     document.getElementById('kategori_jasa').value = kategori;
     document.getElementById('harga').value = harga;
     showModal();

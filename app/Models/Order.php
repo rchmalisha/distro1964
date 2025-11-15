@@ -23,4 +23,8 @@ class Order extends Model
     {
         return $this->hasMany(DetailOrder::class, 'kode_pesan', 'kode_pesan');
     }
+    public function sales()
+    {
+        return $this->hasOne(Sales::class, 'kode_pesan', 'kode_pesan');
+    }
 }

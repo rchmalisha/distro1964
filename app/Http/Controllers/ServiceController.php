@@ -30,7 +30,7 @@ class ServiceController extends Controller
     {
         $request->validate([
             'kode_jasa' => 'required|unique:services',
-            'nama_jasa' => 'required',
+            'nama_barang' => 'required',
             'kategori_jasa' => 'required',
             'harga' => 'required|numeric',
         ]);
@@ -50,7 +50,7 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $request->validate([
-            'nama_jasa' => 'required',
+            'nama_barang' => 'required',
             'kategori_jasa' => 'required',
             'harga' => 'required|numeric',
         ]);

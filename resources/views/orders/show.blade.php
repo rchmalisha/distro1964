@@ -10,28 +10,30 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-600">Kode Pesanan</label>
-                <input type="text" value="{{ $order->kode_pesan }}" readonly
-                       class="w-full border rounded-lg p-2 mt-1">
+                <input type="text" name="kode_pesan" 
+                    class="w-full border rounded-lg p-2 bg-gray-100" 
+                    value="{{ $order->kode_pesan }}" 
+                    readonly>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-600">Nama Pelanggan</label>
                 <input type="text" value="{{ $order->customer->nama_cus }}" readonly
-                       class="w-full border rounded-lg p-2 mt-1">
+                       class="w-full border rounded-lg p-2 bg-gray-100">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-600">No. Telepon</label>
                 <input type="text" value="{{ $order->customer->no_telp }}" readonly
-                       class="w-full border rounded-lg p-2 mt-1">
+                       class="w-full border rounded-lg p-2 bg-gray-100">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-600">Tanggal Pesan</label>
                 <input type="date" value="{{ $order->tgl_pesan }}" readonly
-                       class="w-full border rounded-lg p-2 mt-1">
+                       class="w-full border rounded-lg p-2 bg-gray-100">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-600">Tanggal Ambil</label>
                 <input type="date" value="{{ $order->tgl_ambil }}" readonly
-                       class="w-full border rounded-lg p-2 mt-1">
+                       class="w-full border rounded-lg p-2 bg-gray-100">
             </div>
         </div>
     </div>
@@ -77,7 +79,7 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-2 py-2 border text-center">{{ $index + 1 }}</td>
                         <td class="px-4 py-2 border">
-                            {{ $detail->service->nama_jasa ?? $detail->material->nama_material ?? '-' }}
+                            {{ $detail->service->nama_barang ?? $detail->material->nama_material ?? '-' }}
                         </td>
                         <td class="px-4 py-2 border text-center">
                             @php
@@ -98,7 +100,7 @@
                                 -
                             @endif
                         </td>
-                        <td class="px-4 py-2 border text-center">{{ $detail->jumlah_bahan }}</td>
+                        <td class="px-4 py-2 border text-center">{{ $detail->jumlah_pesan }}</td>
                         <td class="px-4 py-2 border text-right">
                             Rp {{ number_format($detail->harga_satuan, 0, ',', '.') }}
                         </td>

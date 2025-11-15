@@ -60,13 +60,19 @@ Route::middleware('auth')->group(function () {
 
     // Tambahan untuk kelola detail order (ajax/modal)
     Route::get('orders/{order}/details', [OrderController::class, 'showDetails'])->name('orders.show');
-    Route::get('orders/{order}/cetak', [OrderController::class, 'print'])->name('orders.print');
+    Route::get('orders/cetak_nota/{order}', [OrderController::class, 'print'])->name('orders.print');
     Route::post('orders/{order}/details', [OrderController::class, 'storeDetail'])->name('orders.details.store');
     Route::put('orders/{order}/details/{detail}', [OrderController::class, 'updateDetail'])->name('orders.details.update');
     Route::delete('orders/{order}/details/{detail}', [OrderController::class, 'destroyDetail'])->name('orders.details.destroy');
+    Route::delete('/orders/{order}/cancel', [OrderController::class, 'destroy'])->name('orders.cancel');
 });
 
-// ======== FITUR DATA PESANAN ========
+// ======== FITUR DATA PESANAN / PEMBAYARAN ========
 Route::middleware('auth')->group(function () {
-    Route::resource('sales', SalesController::class);
+    Route::get('sales', [SalesController::class, 'index'])->name('sales.index');
+    Route::get('sales/create/{order_id}', [SalesController::class, 'create'])->name('sales.create');
+    Route::post('sales', [SalesController::class, 'store'])->name('sales.store');
+    Route::get('/sales/print', [SalesController::class, 'report'])->name('sales.report');
+    Route::get('/sales/cetak_nota/{kode_jual}', [SalesController::class, 'print'])->name('sales.print');
+
 });

@@ -87,7 +87,7 @@
                     <thead class="bg-gray-100 text-gray-600 uppercase text-xs tracking-wider">
                         <tr>
                             <th class="px-3 py-2 text-center w-12">No</th>
-                            <th class="px-3 py-2">Nama Jasa</th>
+                            <th class="px-3 py-2">Nama Barang</th>
                             <th class="px-3 py-2">Nama Bahan</th>
                             <th class="px-3 py-2">Ukuran Bahan</th>
                             <th class="px-3 py-2 text-center">Jumlah</th>
@@ -220,7 +220,7 @@ function addRow() {
             <select name="detail_orders[${rowIndex}][kode_jasa]" class="w-full border-gray-300 rounded-lg p-2 text-sm focus:ring focus:ring-blue-300">
                 <option value="">-- Pilih --</option>
                 @foreach($services as $s)
-                    <option value="{{ $s->kode_jasa }}">{{ $s->nama_jasa }}</option>
+                    <option value="{{ $s->kode_jasa }}">{{ $s->nama_barang }}</option>
                 @endforeach
             </select>
         </td>
@@ -245,7 +245,7 @@ function addRow() {
             </div>
         </td>
         <td class="px-2 py-2 text-center">
-            <input type="number" name="detail_orders[${rowIndex}][jumlah_bahan]" class="w-24 border-gray-300 rounded-lg p-2 text-sm text-center" oninput="updateSubtotal(this)">
+            <input type="number" name="detail_orders[${rowIndex}][jumlah_pesan]" class="w-24 border-gray-300 rounded-lg p-2 text-sm text-center" oninput="updateSubtotal(this)">
         </td>
         <td class="px-2 py-2 text-center">
             <input type="text" name="detail_orders[${rowIndex}][harga_satuan_display]" 
@@ -323,7 +323,7 @@ function formatHarga(input) {
 
 function updateSubtotal(el) {
     const row = el.closest('tr');
-    const qty = parseFloat(row.querySelector('[name*="[jumlah_bahan]"]').value) || 0;
+    const qty = parseFloat(row.querySelector('[name*="[jumlah_pesan]"]').value) || 0;
     const price = parseFloat(row.querySelector('[name*="[harga_satuan]"]').value) || 0;
     const subtotalHidden = row.querySelector('[name*="[subtotal]"]');
     const subtotalDisplay = row.querySelector('[name*="[subtotal_display]"]');

@@ -15,7 +15,10 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::with('customer')->orderBy('tgl_pesan', 'desc')->get();
+        $orders = Order::with('customer')
+                    ->doesntHave('sales')
+                    ->orderBy('tgl_pesan', 'desc')
+                    ->get();
         return view('orders.index', compact('orders'));
     }
 
@@ -92,7 +95,7 @@ class OrderController extends Controller
                         'kode_bahan' => $detail['kode_bahan'] ?? null,
                         'ukuran_panjang' => $detail['ukuran_panjang'] ?? '',
                         'ukuran_lebar' => $detail['ukuran_lebar'] ?? '',
-                        'jumlah_bahan' => $detail['jumlah_bahan'] ?? 0,
+                        'jumlah_pesan' => $detail['jumlah_pesan'] ?? 0,
                         'harga_satuan' => $detail['harga_satuan'] ?? 0,
                         'subtotal' => $detail['subtotal'] ?? 0,
                     ]);
@@ -102,10 +105,10 @@ class OrderController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('orders.index')->with('success', 'Order berhasil disimpan!');
+            return redirect()->route('orders.show', $order->id)->with('success', 'Pesanan berhasil disimpan!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal menyimpan order: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menyimpan pesanan: ' . $e->getMessage());
         }
     }
 
@@ -114,7 +117,7 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
         $order->delete();
 
-        return redirect()->back()->with('success', 'Order berhasil dihapus.');
+        return redirect()->back()->with('success', 'Pesanan berhasil dibatalkan.');
     }
 
     public function show($id)

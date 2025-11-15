@@ -26,7 +26,7 @@ return new class extends Migration
             $table->foreign('kode_bahan')->references('kode_bahan')->on('materials')->onDelete('cascade');
             $table->decimal('ukuran_panjang', 10, 2);
             $table->decimal('ukuran_lebar', 10, 2);
-            $table->integer('jumlah_bahan');
+            $table->integer('jumlah_pesan');
             $table->decimal('harga_satuan', 15, 2);
             $table->decimal('subtotal', 15, 2);
             $table->timestamps();
