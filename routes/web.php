@@ -12,8 +12,6 @@ use App\Http\Controllers\MaterialNeedsController;
 use App\Http\Controllers\TrialBalanceController;
 use App\Http\Controllers\GeneralLedgerController;
 use App\Http\Controllers\BalanceSheetController;
-use App\Http\Controllers\TrialBalanceController;
-use App\Http\Controllers\GeneralLedgerController;
 use App\Http\Controllers\ProfitAndLossController;
 use App\Http\Controllers\GeneralJournalController;
 use App\Http\Controllers\PurchasingController;

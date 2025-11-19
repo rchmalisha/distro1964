@@ -3,117 +3,163 @@
 @section('title', 'Laporan Laba Rugi')
 
 @section('content')
-<div class="p-6 bg-white shadow rounded-2xl">
+<div class="w-full px-6 py-6 mx-auto">
+    <div class="bg-white shadow-lg rounded-2xl p-6 border border-slate-200">
 
-    {{-- Header --}}
-    <div class="mb-6 flex justify-center">
-        <div class="w-full rounded-xl shadow-soft-md bg-gradient-to-tl from-purple-700 to-pink-500 px-8 py-6 flex flex-col items-center" style="max-width: 98vw;">
-            <span class="inline-block bg-white bg-opacity-20 p-3 rounded-lg mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 17v-2h6v2m3 4H6a2 2 0 01-2-2V5a2 
-                        2 0 012-2h12a2 2 0 
-                        012 2v14a2 2 0 
-                        01-2 2zM9 9h6v2H9V9z" />
-                </svg>
-            </span>
-            <h2 class="text-2xl font-extrabold text-white tracking-tight mb-1 drop-shadow">
-                Laporan Laba Rugi
-            </h2>
+        {{-- Header (Hanya penyesuaian warna teks agar kontras dengan gradien) --}}
+        <div class="mb-6 flex justify-center">
+            <div class="w-full rounded-xl shadow-soft-md bg-gradient-to-tl from-purple-700 to-pink-500 px-8 py-6 flex flex-col items-center" style="max-width: 98vw;">
+                
+                <span class="inline-block bg-white bg-opacity-20 p-2 rounded-lg mb-2">
+                    <i class="fa-solid fa-chart-line text-2xl text-slate-700"></i>
+                </span>
+                
+                <h2 class="text-2xl font-bold text-slate-700 tracking-tight mb-1 drop-shadow">
+                    Laporan Laba Rugi
+                </h2>
 
-            @if(isset($month) && isset($year))
-            @if($month == 'all')
-            <span class="text-base font-semibold text-white">
-                Periode: Januari – Desember {{ $year }}
-            </span>
-            @else
-            <span class="text-base font-semibold text-white">
-                Periode: {{ \Carbon\Carbon::createFromDate($year, $month, 1)->locale('id')->translatedFormat('F Y') }}
-            </span>
-            @endif
-            @endif
-        </div>
-    </div>
-
-    {{-- Filter Bulan & Tahun --}}
-    <form method="GET" class="flex flex-wrap items-end gap-4 mb-4 justify-between">
-        <div class="flex gap-4 items-end">
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Bulan</label>
-                <select name="month" class="border rounded-lg px-3 py-2 w-40">
-                    <option value="">Pilih Bulan</option>
-                    <option value="all" {{ (isset($month) && $month == 'all') ? 'selected' : '' }}>Semua Bulan</option>
-                    @foreach (range(1,12) as $m)
-                    <option value="{{ $m }}" {{ (isset($month) && $m == $month) ? 'selected' : '' }}>
-                        {{ \Carbon\Carbon::createFromDate(null, $m, 1)->locale('id')->translatedFormat('F') }}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Tahun</label>
-                <select name="year" class="border rounded-lg px-3 py-2 w-32">
-                    <option value="">Pilih Tahun</option>
-                    @foreach (range(date('Y')-5, date('Y')) as $y)
-                    <option value="{{ $y }}" {{ (isset($year) && $y == $year) ? 'selected' : '' }}>{{ $y }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            {{-- Tombol Filter, Reset, dan Print --}}
-            <div class="flex gap-2">
-                <button type="submit"
-                    class="inline-block px-6 py-3 font-bold text-center bg-gradient-to-tl from-blue-600 to-cyan-400 uppercase transition-all rounded-lg text-xs shadow-soft-md hover:scale-105 active:opacity-85 text-white">
-                    Filter
-                </button>
-
-                <a href="{{ route('profit.loss.index') }}"
-                    class="inline-block px-6 py-3 font-bold text-center bg-gradient-to-tl from-slate-600 to-slate-300 uppercase transition-all rounded-lg text-xs shadow-soft-md hover:scale-105 active:opacity-85 text-white">
-                    Reset
-                </a>
-
-                <a href="{{ route('profit.loss.print', ['month' => $month ?? '', 'year' => $year ?? '']) }}" target="_blank"
-                    class="inline-block px-6 py-3 font-bold text-center bg-gradient-to-tl from-green-600 to-lime-400 uppercase transition-all rounded-lg text-xs shadow-soft-md hover:scale-105 active:opacity-85 text-white">
-                    Cetak
-                </a>
+                @if(isset($month) && isset($year))
+                    @if($month == 'all')
+                    <span class="text-base font-semibold">
+                        Periode: Januari – Desember {{ $year }}
+                    </span>
+                    @else
+                    <span class="text-base font-semibold ">
+                        Periode: {{ \Carbon\Carbon::createFromDate($year, $month, 1)->locale('id')->translatedFormat('F Y') }}
+                    </span>
+                    @endif
+                    <span class="text-sm">(dalam Rupiah)</span>
+                @endif
             </div>
         </div>
-    </form>
 
-    {{-- Table --}}
-    <div class="overflow-x-auto">
-        <table class="min-w-[600px] w-full text-sm text-left text-gray-700 border">
-            <tbody>
-                {{-- Pendapatan --}}
-                <tr class="bg-gray-100 font-bold">
-                    <td colspan="2" class="px-4 py-2">Pendapatan</td>
-                    <td class="px-4 py-2 text-right">{{ number_format($pendapatan ?? 0, 2, ',', '.') }}</td>
-                </tr>
+        {{-- Filter Bulan & Tahun (Kelas disesuaikan) --}}
+        <form method="GET" class="flex flex-wrap items-end gap-4 mb-6 justify-between">
+            <div class="flex gap-4 items-end flex-wrap">
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-gray-700">Bulan</label>
+                    <select name="month" class="border rounded-lg px-3 py-2 w-40 focus:border-slate-700 focus:ring-slate-700">
+                        <option value="">Pilih Bulan</option>
+                        <option value="all" {{ (isset($month) && $month == 'all') ? 'selected' : '' }}>Semua Bulan</option>
+                        @foreach (range(1,12) as $m)
+                        <option value="{{ $m }}" {{ (isset($month) && $m == $month) ? 'selected' : '' }}>
+                            {{ \Carbon\Carbon::createFromDate(null, $m, 1)->locale('id')->translatedFormat('F') }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-gray-700">Tahun</label>
+                    <select name="year" class="border rounded-lg px-3 py-2 w-32 focus:border-slate-700 focus:ring-slate-700">
+                        <option value="">Pilih Tahun</option>
+                        @foreach (range(date('Y')-5, date('Y')) as $y)
+                        <option value="{{ $y }}" {{ (isset($year) && $y == $year) ? 'selected' : '' }}>{{ $y }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-                {{-- Biaya-biaya --}}
-                <tr class="bg-gray-50 font-semibold">
-                    <td colspan="3" class="px-4 py-2">Biaya-Biaya:</td>
-                </tr>
-                <tr><td class="pl-8 py-2">Biaya ATK</td><td></td><td class="text-right px-4">{{ number_format($biaya_atk ?? 0, 2, ',', '.') }}</td></tr>
-                <tr><td class="pl-8 py-2">Biaya Gaji</td><td></td><td class="text-right px-4">{{ number_format($biaya_gaji ?? 0, 2, ',', '.') }}</td></tr>
-                <tr><td class="pl-8 py-2">Biaya Transportasi</td><td></td><td class="text-right px-4">{{ number_format($biaya_transportasi ?? 0, 2, ',', '.') }}</td></tr>
-                <tr><td class="pl-8 py-2">Biaya Internet</td><td></td><td class="text-right px-4">{{ number_format($biaya_internet ?? 0, 2, ',', '.') }}</td></tr>
-                <tr><td class="pl-8 py-2">Biaya Lainnya</td><td></td><td class="text-right px-4">{{ number_format($biaya_lainnya ?? 0, 2, ',', '.') }}</td></tr>
-                <tr><td class="pl-8 py-2">Biaya Service Komputer & Aplikasi</td><td></td><td class="text-right px-4">{{ number_format($biaya_service ?? 0, 2, ',', '.') }}</td></tr>
+                {{-- Tombol Filter, Reset, dan Print (Kelas disesuaikan) --}}
+                <div class="flex gap-2">
+                    <button type="submit"
+                        class="bg-slate-700 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition text-sm font-medium">
+                        Filter
+                    </button>
 
-                {{-- Total Biaya --}}
-                <tr class="bg-gray-100 font-bold border-t">
-                    <td colspan="2" class="px-4 py-2">Total Biaya</td>
-                    <td class="px-4 py-2 text-right">{{ number_format($total_biaya ?? 0, 2, ',', '.') }}</td>
-                </tr>
+                    <a href="{{ route('profit.loss.index') }}"
+                        class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition text-sm font-medium">
+                        Reset
+                    </a>
 
-                {{-- Laba/Rugi --}}
-                <tr class="bg-blue-100 font-extrabold border-t">
-                    <td colspan="2" class="px-4 py-2">Laba (Rugi)</td>
-                    <td class="px-4 py-2 text-right">{{ number_format($laba_rugi ?? 0, 2, ',', '.') }}</td>
-                </tr>
-            </tbody>
-        </table>
+                    <a href="{{ route('profit.loss.print', ['month' => $month ?? '', 'year' => $year ?? '']) }}" target="_blank"
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm font-medium">
+                        Cetak
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        {{-- Table Laporan (Sesuai Acuan: border border-slate-200 shadow rounded-2xl bg-white) --}}
+        <div class="border border-slate-200 shadow rounded-2xl bg-white">
+            <div class="overflow-x-auto">
+                <table class="items-center w-full text-slate-600 border-collapse min-w-[600px]">
+                    <tbody>
+                        {{-- Pendapatan --}}
+                        <tr class="bg-slate-100 font-bold border-b border-slate-200">
+                            <td class="px-6 py-3 border-r border-slate-200">Pendapatan</td>
+                            <td class="px-6 py-3 border-r border-slate-200 text-right font-normal"></td>
+                            <td class="px-6 py-3 text-right">
+                                Rp {{ number_format($pendapatan ?? 0, 0, ',', '.') }}
+                            </td>
+                        </tr>
+
+                        {{-- Biaya-biaya --}}
+                        <tr class="bg-gray-50 font-semibold border-b border-slate-200">
+                            <td class="px-6 py-3 border-r border-slate-200">Biaya-Biaya:</td>
+                            <td class="px-6 py-3 border-r border-slate-200"></td>
+                            <td class="px-6 py-3"></td>
+                        </tr>
+                        
+                        {{-- Detail Biaya --}}
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="px-6 py-2"></td>
+                            <td class="px-6 py-2 border-r border-slate-200">Biaya ATK</td>
+                            <td class="px-6 py-2 text-right">({{ number_format($biaya_atk ?? 0, 0, ',', '.') }})</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="px-6 py-2"></td>
+                            <td class="px-6 py-2 border-r border-slate-200">Biaya Gaji</td>
+                            <td class="px-6 py-2 text-right">({{ number_format($biaya_gaji ?? 0, 0, ',', '.') }})</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="px-6 py-2"></td>
+                            <td class="px-6 py-2 border-r border-slate-200">Biaya Transportasi</td>
+                            <td class="px-6 py-2 text-right">({{ number_format($biaya_transportasi ?? 0, 0, ',', '.') }})</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="px-6 py-2"></td>
+                            <td class="px-6 py-2 border-r border-slate-200">Biaya Internet</td>
+                            <td class="px-6 py-2 text-right">({{ number_format($biaya_internet ?? 0, 0, ',', '.') }})</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="px-6 py-2"></td>
+                            <td class="px-6 py-2 border-r border-slate-200">Biaya Lainnya</td>
+                            <td class="px-6 py-2 text-right">({{ number_format($biaya_lainnya ?? 0, 0, ',', '.') }})</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="px-6 py-2"></td>
+                            <td class="px-6 py-2 border-r border-slate-200">Biaya Service Komputer & Aplikasi</td>
+                            <td class="px-6 py-2 text-right">({{ number_format($biaya_service ?? 0, 0, ',', '.') }})</td>
+                        </tr>
+
+                        {{-- Total Biaya --}}
+                        <tr class="bg-gray-100 font-bold border-t border-b border-slate-200">
+                            <td class="px-6 py-3 border-r border-slate-200">Total Biaya</td>
+                            <td class="px-6 py-3 border-r border-slate-200"></td>
+                            <td class="px-6 py-3 text-right">
+                                (Rp {{ number_format($total_biaya ?? 0, 0, ',', '.') }})
+                            </td>
+                        </tr>
+
+                        {{-- Laba/Rugi (Hasil Akhir) --}}
+                        @php
+                            $laba_rugi_val = $laba_rugi ?? 0;
+                            $is_laba = $laba_rugi_val >= 0;
+                            $row_class = $is_laba ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                            $text_result = $is_laba ? 'Laba Bersih' : 'Rugi Bersih';
+                            $formatted_result = number_format(abs($laba_rugi_val), 0, ',', '.');
+                        @endphp
+                        <tr class="{{ $row_class }} font-extrabold border-t-2 border-slate-700">
+                            <td class="px-6 py-4 border-r border-slate-200 uppercase">{{ $text_result }}</td>
+                            <td class="px-6 py-4 border-r border-slate-200 text-right font-normal"></td>
+                            <td class="px-6 py-4 text-right">
+                                Rp {{ $formatted_result }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </div>
 @endsection

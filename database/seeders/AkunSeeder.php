@@ -14,7 +14,6 @@ class AkunSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         // Hapus data pada tabel yang memiliki relasi ke accounts
-        DB::table('assets')->delete();
         DB::table('general_journals')->delete();
         DB::table('accounts')->truncate();
 
