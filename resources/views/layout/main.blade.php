@@ -17,6 +17,7 @@
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
   <title>Distro 1964 - @yield('title')</title>
+    @vite('resources/css/app.css', 'resources/js/app.js')
   @include('layout.partial.link')
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
@@ -25,7 +26,8 @@
     data-site="YOUR_DOMAIN_HERE"
     src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
   <script src="//unpkg.com/alpinejs" defer></script>
-  <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+  <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js">
+    </script>
 </head>
 
 <body
@@ -43,6 +45,38 @@
 
   {{-- Tambahkan ini agar halaman anak bisa menambahkan script khusus --}}
   @stack('scripts')
+
+  {{-- Section for page modals (so modals render at end of body and fixed positioning works) --}}
+  @yield('modals')
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  @if (session('success'))
+  <script>
+  Swal.fire({
+      icon: 'success',
+      title: 'Berhasil!',
+      text: @json(session('success')),
+      showConfirmButton: true,
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#3085d6',
+      timer: 3500,
+      timerProgressBar: true,
+  });
+  </script>
+  @endif
+
+  @if (session('error'))
+  <script>
+  Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: @json(session('error')),
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#d33',
+  });
+  </script>
+  @endif
 
 </body>
 

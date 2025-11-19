@@ -3,13 +3,20 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\MaterialNeedsController;
+use App\Http\Controllers\TrialBalanceController;
+use App\Http\Controllers\GeneralLedgerController;
 use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\TrialBalanceController;
 use App\Http\Controllers\GeneralLedgerController;
 use App\Http\Controllers\ProfitAndLossController;
 use App\Http\Controllers\GeneralJournalController;
-
+use App\Http\Controllers\PurchasingController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -22,12 +29,14 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
 
+Route::resource('materials', MaterialController::class);
 
 Route::get('/sign-up', [AuthController::class, 'showSignUp'])->name('sign-up.form');
 Route::post('/sign-up', [AuthController::class, 'signUp'])->name('sign-up');
 
 Route::get('/sign-in', [AuthController::class, 'showSignIn'])->name('sign-in.form');
 Route::post('/sign-in', [AuthController::class, 'signIn'])->name('sign-in');
+Route::redirect('/login', '/sign-in')->name('login');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -47,3 +56,38 @@ Route::get('/profit-and-loss/print', [ProfitAndLossController::class, 'print'])-
 Route::get('/balance-sheet', [BalanceSheetController::class, 'index'])->name('balance.sheet.index');
 Route::get('/balance-sheet/print', [App\Http\Controllers\BalanceSheetController::class, 'print'])->name('balance.sheet.print');
 
+// ======== FITUR DATA JASA ========
+Route::middleware('auth')->group(function () {
+    Route::resource('services', ServiceController::class);
+    // Kebutuhan bahan (material needs)
+    Route::resource('materialneeds', MaterialNeedsController::class)->only(['index']);
+});
+
+
+// ======== FITUR ORDER & DETAIL ORDER ========
+Route::middleware('auth')->group(function () {
+    // CRUD utama untuk Order
+    Route::resource('orders', OrderController::class);
+
+    // Tambahan untuk kelola detail order (ajax/modal)
+    Route::get('orders/{order}/details', [OrderController::class, 'showDetails'])->name('orders.show');
+    Route::get('orders/cetak_nota/{order}', [OrderController::class, 'print'])->name('orders.print');
+    Route::post('orders/{order}/details', [OrderController::class, 'storeDetail'])->name('orders.details.store');
+    Route::put('orders/{order}/details/{detail}', [OrderController::class, 'updateDetail'])->name('orders.details.update');
+    Route::delete('orders/{order}/details/{detail}', [OrderController::class, 'destroyDetail'])->name('orders.details.destroy');
+    Route::delete('/orders/{order}/cancel', [OrderController::class, 'destroy'])->name('orders.cancel');
+});
+
+// ======== FITUR DATA PESANAN / PEMBAYARAN ========
+Route::middleware('auth')->group(function () {
+    Route::get('sales', [SalesController::class, 'index'])->name('sales.index');
+    Route::get('sales/create/{order_id}', [SalesController::class, 'create'])->name('sales.create');
+    Route::post('sales', [SalesController::class, 'store'])->name('sales.store');
+    Route::get('/sales/print', [SalesController::class, 'report'])->name('sales.report');
+    Route::get('/sales/cetak_nota/{kode_jual}', [SalesController::class, 'print'])->name('sales.print');
+
+});
+
+Route::post('/purchasing/create-from-need', [App\Http\Controllers\PurchasingController::class, 'createFromNeed'])->name('purchasing.createFromNeed');
+
+Route::resource('purchasing', App\Http\Controllers\PurchasingController::class);
