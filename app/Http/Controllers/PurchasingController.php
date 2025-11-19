@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Purchasing;
 use Illuminate\Http\Request;
+use App\Services\JournalService;
+use Illuminate\Support\Facades\DB;
 
 class PurchasingController extends Controller
 {
@@ -51,7 +53,7 @@ class PurchasingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Purchasing $purchasing)
+    public function update(Request $request, Purchasing $purchasing, JournalService $journalService)
     {
         $validated = $request->validate([
             'tanggal_pembelian' => 'required|date',
@@ -60,18 +62,49 @@ class PurchasingController extends Controller
             'total_harga' => 'required|numeric',
         ]);
 
-        $purchasing->update($validated);
+        DB::beginTransaction();
 
-        // Setelah pembelian dilengkapi, hapus entri kebutuhan bahan terkait agar tidak terjadi duplikat
         try {
-            \App\Models\MaterialNeeds::where('kode_bahan', $purchasing->kode_bahan)->delete();
-        } catch (\Exception $e) {
-            // jika terjadi error, biarkan proses update tetap berhasil tetapi catat ke log
-            logger()->error('Gagal menghapus MaterialNeeds setelah update Purchasing: ' . $e->getMessage());
-        }
 
-        return redirect()->route('purchasing.index')->with('success', 'Data pembelian berhasil diperbarui.');
+            // Update data pembelian
+            $purchasing->update($validated);
+
+            // === TAMBAHKAN BAGIAN INI (JURNAL OTOMATIS) ===
+            $journalService->createJournal(
+                tanggal: $validated['tanggal_pembelian'],
+                keterangan: 'Pembelian bahan habis pakai - ' . $purchasing->nama_bahan,
+                entries: [
+                    [
+                        'kode_akun' => '5105',     // Beban Bahan Habis Pakai
+                        'posisi' => 'debit',
+                        'nominal' => $validated['total_harga'],
+                    ],
+                    [
+                        'kode_akun' => '1101',     // Kas
+                        'posisi' => 'kredit',
+                        'nominal' => $validated['total_harga'],
+                    ],
+                ],
+                ref_tipe: 'purchasing',
+                ref_id: $purchasing->id
+            );
+            // === END JURNAL OTOMATIS ===
+
+            // Menghapus kebutuhan bahan agar tidak duplikat
+            \App\Models\MaterialNeeds::where('kode_bahan', $purchasing->kode_bahan)->delete();
+
+            DB::commit();
+
+            return redirect()->route('purchasing.index')->with('success', 'Data pembelian berhasil diperbarui & jurnal otomatis tercatat.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            logger()->error('Gagal mencatat jurnal: '.$e->getMessage());
+
+            return redirect()->route('purchasing.index')->with('error', 'Pembelian tersimpan, namun jurnal gagal dicatat.');
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.

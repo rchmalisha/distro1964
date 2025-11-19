@@ -10,47 +10,106 @@ class TrialBalanceController extends Controller
 {
     public function index(Request $request)
     {
-        // Ambil input bulan dan tahun tanpa default
-        $month = $request->input('month');
-        $year = $request->input('year');
+        $month = $request->input('month');   // null | 1–12 | '0'
+        $year  = $request->input('year');    // null | yyyy
 
         $trialBalance = collect();
 
-        // Jika bulan & tahun dipilih baru ambil data
-        if ($month && $year) {
-            // Ambil semua akun
-            $accounts = Account::orderBy('kode_akun', 'asc')->get();
+        if ($year) {
 
-            // Ambil saldo total debit dan kredit dari jurnal untuk bulan & tahun tersebut
-            $balances = DB::table('general_journal_details as d')
-                ->join('general_journals as j', 'd.general_journal_id', '=', 'j.id')
-                ->select(
-                    'd.kode_akun',
-                    DB::raw('SUM(d.debit) as total_debit'),
-                    DB::raw('SUM(d.kredit) as total_kredit')
-                )
-                ->whereMonth('j.tanggal_jurnal', $month)
-                ->whereYear('j.tanggal_jurnal', $year)
-                ->groupBy('d.kode_akun')
-                ->get()
-                ->keyBy('kode_akun');
+            $accounts = Account::orderBy('kode_akun')->get();
 
-            // Gabungkan hasil dengan daftar akun
-            $trialBalance = $accounts->map(function ($acc) use ($balances) {
-                $saldo = $balances[$acc->kode_akun] ?? null;
+            $trialBalance = $accounts->map(function ($acc) use ($month, $year) {
+
+                // ---------------------------------------------------------
+                // 1. SALDO AWAL MASTER
+                // ---------------------------------------------------------
+                $masterSaldoAwal = (float) $acc->saldo_awal;
+
+                // ---------------------------------------------------------
+                // 2. MUTASI SEBELUM PERIODE (untuk saldo awal periode)
+                // ---------------------------------------------------------
+                $mutasiSebelum = DB::table('general_journal_details as d')
+                    ->join('general_journals as j', 'd.general_journal_id', '=', 'j.id')
+                    ->selectRaw('SUM(d.debit) as total_debit, SUM(d.kredit) as total_kredit')
+                    ->where('d.kode_akun', $acc->kode_akun)
+                    ->whereYear('j.tanggal_jurnal', '<=', $year);
+
+                if ($month && $month !== '0') {
+                    $mutasiSebelum->whereMonth('j.tanggal_jurnal', '<', $month);
+                }
+
+                $mutasiSebelum = $mutasiSebelum->first() ?? (object)[
+                    'total_debit' => 0,
+                    'total_kredit' => 0
+                ];
+
+                $beforeDebit  = (float) $mutasiSebelum->total_debit;
+                $beforeKredit = (float) $mutasiSebelum->total_kredit;
+
+                // Hitung saldo awal periode
+                if ($acc->saldo_normal === 'debit') {
+                    $saldoAwalPeriode = $masterSaldoAwal + ($beforeDebit - $beforeKredit);
+                } else {
+                    $saldoAwalPeriode = $masterSaldoAwal + ($beforeKredit - $beforeDebit);
+                }
+
+                // ---------------------------------------------------------
+                // 3. MUTASI PERIODE INI
+                // ---------------------------------------------------------
+                $mutasiPeriode = DB::table('general_journal_details as d')
+                    ->join('general_journals as j', 'd.general_journal_id', '=', 'j.id')
+                    ->selectRaw('SUM(d.debit) as total_debit, SUM(d.kredit) as total_kredit')
+                    ->where('d.kode_akun', $acc->kode_akun)
+                    ->whereYear('j.tanggal_jurnal', $year);
+
+                if ($month && $month !== '0') {
+                    $mutasiPeriode->whereMonth('j.tanggal_jurnal', $month);
+                }
+
+                $mutasiPeriode = $mutasiPeriode->first() ?? (object)[
+                    'total_debit' => 0,
+                    'total_kredit' => 0
+                ];
+
+                $periodeDebit  = (float) $mutasiPeriode->total_debit;
+                $periodeKredit = (float) $mutasiPeriode->total_kredit;
+
+                // ---------------------------------------------------------
+                // 4. HITUNG SALDO AKHIR
+                // ---------------------------------------------------------
+                if ($acc->saldo_normal === 'debit') {
+                    $saldoAkhir = $saldoAwalPeriode + ($periodeDebit - $periodeKredit);
+                } else {
+                    $saldoAkhir = $saldoAwalPeriode + ($periodeKredit - $periodeDebit);
+                }
+
+                // ---------------------------------------------------------
+                // 5. TEMPATKAN SALDO AKHIR HANYA DI 1 KOLOM
+                // ---------------------------------------------------------
+                $debitCol  = 0;
+                $kreditCol = 0;
+
+                if ($acc->saldo_normal === 'debit') {
+                    $debitCol = max($saldoAkhir, 0);
+                } else {
+                    $kreditCol = max($saldoAkhir, 0);
+                }
+
                 return (object) [
                     'kode_akun' => $acc->kode_akun,
                     'nama_akun' => $acc->nama_akun,
-                    'debit' => $saldo->total_debit ?? 0,
-                    'kredit' => $saldo->total_kredit ?? 0,
+                    'debit'     => $debitCol,
+                    'kredit'    => $kreditCol,
                 ];
             });
         }
 
-        return view('accounting.trial_balance.index', [
-            'trialBalance' => $trialBalance,
-            'month' => $month,
-            'year' => $year,
-        ]);
+        return view('accounting.trial_balance.index', compact(
+            'trialBalance',
+            'month',
+            'year'
+        ));
     }
+
 }

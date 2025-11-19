@@ -11,7 +11,6 @@ class GeneralJournal extends Model
 
     protected $fillable = [
         'kode_jurnal',
-        'no_bukti',
         'tanggal_jurnal',
         'keterangan_jurnal',
         'ref_tipe',

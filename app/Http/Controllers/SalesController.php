@@ -6,6 +6,8 @@ use App\Models\Order;
 use App\Models\Sales;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Services\JournalService;
+use Illuminate\Support\Facades\DB;
 
 class SalesController extends Controller
 {
@@ -59,7 +61,7 @@ class SalesController extends Controller
         return view('sales.create', compact('order'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, JournalService $journalService)
     {
         $validated = $request->validate([
             'kode_pesan' => 'required|string|exists:orders,kode_pesan',
@@ -72,38 +74,69 @@ class SalesController extends Controller
         $bayar = (int) $validated['bayar'];
         $totalAkhir = (int) $validated['total_akhir'];
 
-        // Validasi pembayaran harus mencukupi
         if ($bayar < $totalAkhir) {
-            return back()->withErrors(['bayar' => 'Pembayaran tidak mencukupi. Total yang harus dibayar adalah Rp ' . number_format($totalAkhir, 0, ',', '.')]);
+            return back()->withErrors(['bayar' => 'Pembayaran tidak mencukupi.']);
         }
 
-        // Validasi semua checkbox status dicentang
         if (count($validated['status']) !== $order->detailOrders->count()) {
-            return back()->withErrors(['status' => 'Semua item harus dicentang sebelum menyimpan pembayaran.']);
+            return back()->withErrors(['status' => 'Semua item harus dicentang.']);
         }
 
-        // Generate kode_jual unik
-        $kodeSales = $this->generateKodeSales();
+        DB::beginTransaction();
 
-        // Hitung kembalian
-        $kembalian = $bayar - $totalAkhir;
+        try {
 
-        // Simpan data penjualan
-        $sale = Sales::create([
-            'kode_jual' => $kodeSales,
-            'kode_pesan' => $order->kode_pesan,
-            'tgl_transaksi' => Carbon::now(),
-            'total_akhir' => $totalAkhir,
-            'bayar' => $bayar,
-            'kembalian' => $kembalian,
-        ]);
+            $kodeSales = $this->generateKodeSales();
+            $kembalian = $bayar - $totalAkhir;
 
-        return response()->json([
-            'success' => true,
-            'print_url' => route('sales.print', $sale->kode_jual)
-        ]);
+            // Simpan data penjualan
+            $sale = Sales::create([
+                'kode_jual' => $kodeSales,
+                'kode_pesan' => $order->kode_pesan,
+                'tgl_transaksi' => Carbon::now(),
+                'total_akhir' => $totalAkhir,
+                'bayar' => $bayar,
+                'kembalian' => $kembalian,
+            ]);
 
+            // ===============================
+            //   JURNAL OTOMATIS PENJUALAN
+            // ===============================
+            $journalService->createJournal(
+                tanggal: Carbon::now()->format('Y-m-d'),
+                keterangan: 'Penjualan jasa - ' . $sale->kode_jual,
+                entries: [
+                    [
+                        'kode_akun' => '1101',
+                        'posisi' => 'debit',
+                        'nominal' => $totalAkhir
+                    ],
+                    [
+                        'kode_akun' => '4101',
+                        'posisi' => 'kredit',
+                        'nominal' => $totalAkhir
+                    ],
+                ],
+                ref_tipe: 'sales',
+                ref_id: $sale->id
+            );
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'print_url' => route('sales.print', $sale->kode_jual)
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            logger()->error('Gagal membuat jurnal penjualan: ' . $e->getMessage());
+
+            return back()->with('error', 'Penjualan tersimpan, tetapi jurnal gagal dicatat.');
+        }
     }
+
+
 
     private function generateKodeSales()
     {
@@ -145,5 +178,7 @@ public function report(Request $request)
 
     return view('sales.report', compact('sales', 'start_date', 'end_date'));
 }
+
+
 
 }

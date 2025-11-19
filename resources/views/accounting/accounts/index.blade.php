@@ -17,15 +17,7 @@
                 </button>
             </div>
             {{-- Placeholder untuk Search dan Rows Per Page (jika ingin ditambahkan nanti) --}}
-            </div>
-
-        {{-- Alert sukses (Menggunakan notifikasi Toast SweetAlert2 seperti acuan) --}}
-        {{-- Jika Anda ingin mempertahankan alert biasa, gunakan yang di bawah ini: --}}
-        {{-- @if(session('success'))
-            <div class="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
-                {{ session('success') }}
-            </div>
-        @endif --}}
+        </div>
 
         {{-- Tabel Data (Sesuai Acuan: border border-slate-200 shadow rounded-2xl bg-white) --}}
         <div class="border border-slate-200 shadow rounded-2xl bg-white">
@@ -72,13 +64,13 @@
                     </tbody>
                 </table>
             </div>
-            </div>
+        </div>
     </div>
 </div>
 
-{{-- Modal Tambah Akun (Mengadopsi Tampilan Modal Acuan) --}}
+{{-- Modal Tambah Akun (Sudah Diperbaiki Penengahan) --}}
 <div x-show="$store.modal.openAdd" x-transition x-cloak style="z-index:9999"
-    class="fixed inset-0 items-center justify-center">
+    class="fixed inset-0 flex items-center justify-center">
     <div @click="$store.modal.openAdd = false" style="z-index:9998"
         class="absolute inset-0 bg-black opacity-50"></div>
 
@@ -91,7 +83,7 @@
         </button>
 
         <h2 class="text-xl font-semibold text-slate-700 mb-4">Tambah Data Akun</h2>
-        
+
         <form method="POST" action="{{ route('accounts.store') }}" class="space-y-4">
             @csrf
 
@@ -144,10 +136,10 @@
     </div>
 </div>
 
-{{-- Modal Edit Akun (Mengadopsi Tampilan Modal Acuan) --}}
+{{-- Modal Edit Akun (Sudah Diperbaiki Penengahan dan Kode Akun) --}}
 @foreach($accounts as $account)
 <div x-show="$store.modal.openEdit === '{{ $account->id }}'" x-transition x-cloak style="z-index:9999"
-    class="fixed inset-0 items-center justify-center">
+    class="fixed inset-0 flex items-center justify-center">
     <div @click="$store.modal.openEdit = null" style="z-index:9998"
         class="absolute inset-0 bg-black opacity-50"></div>
 
@@ -165,12 +157,11 @@
             @csrf @method('PUT')
 
             <div class="space-y-4">
-                {{-- Kode Akun dibuat ReadOnly seperti acuan, jika ada --}}
-                {{-- Jika kode akun tidak dikirimkan di modal edit, Anda bisa menghapus div ini: --}}
+                {{-- KODE AKUN SUDAH BISA DIEDIT --}}
                 <div>
                     <label class="block text-sm font-medium mb-1">Kode Akun</label>
-                    <input type="text" value="{{ $account->kode_akun }}"
-                        class="w-full border rounded-lg px-3 py-2 bg-gray-100" readonly>
+                    <input type="text" name="kode_akun" value="{{ $account->kode_akun }}"
+                        class="w-full border rounded-lg px-3 py-2" required>
                 </div>
 
                 <div>

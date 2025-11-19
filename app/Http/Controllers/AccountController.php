@@ -9,18 +9,23 @@ class AccountController extends Controller
 {
     public function index()
     {
-        $accounts = Account::all();
+        // 🚀 PERUBAHAN DI SINI:
+        // Menggunakan orderBy('kode_akun') untuk mengurutkan data berdasarkan kode akun
+        // secara ascending (terkecil ke terbesar atau A-Z)
+        $accounts = Account::orderBy('kode_akun')->get(); 
+        
         return view('accounting.accounts.index', compact('accounts'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'kode_akun' => 'required|unique:accounts',
+            // Tambahkan pengecekan unique untuk kode_akun di method store
+            'kode_akun' => 'required|unique:accounts,kode_akun',
             'nama_akun' => 'required',
             'jenis_akun' => 'required',
             'saldo_normal' => 'required',
-            'saldo_awal' => 'numeric'
+            'saldo_awal' => 'nullable|numeric' // Mengubah ke nullable|numeric jika boleh kosong
         ]);
 
         Account::create($request->all());
@@ -30,10 +35,13 @@ class AccountController extends Controller
     public function update(Request $request, Account $account)
     {
         $request->validate([
+            // ⚠️ PENTING: Jika Kode Akun diizinkan diedit, validasi unique harus diubah
+            // agar mengabaikan akun yang sedang diedit
+            'kode_akun' => 'required|unique:accounts,kode_akun,'.$account->id, // Menambahkan validasi kode akun
             'nama_akun' => 'required',
             'jenis_akun' => 'required',
             'saldo_normal' => 'required',
-            'saldo_awal' => 'numeric'
+            'saldo_awal' => 'nullable|numeric' // Mengubah ke nullable|numeric jika boleh kosong
         ]);
 
         $account->update($request->all());
@@ -46,4 +54,3 @@ class AccountController extends Controller
         return redirect()->back()->with('success', 'Akun berhasil dihapus.');
     }
 }
-
