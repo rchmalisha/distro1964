@@ -18,7 +18,10 @@ class GeneralJournalDetail extends Model
 
     public function journal()
     {
-        return $this->belongsTo(GeneralJournal::class);
+        return $this->belongsTo(GeneralJournal::class, 'general_journal_id');
+    }
+    public function account()
+    {
+        return $this->belongsTo(Account::class, 'kode_akun', 'kode_akun');
     }
 }
-

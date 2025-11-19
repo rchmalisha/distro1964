@@ -1,12 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\GeneralJournalController;
-use App\Http\Controllers\GeneralLedgerController;
+use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\TrialBalanceController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\GeneralLedgerController;
+use App\Http\Controllers\ProfitAndLossController;
+use App\Http\Controllers\GeneralJournalController;
 
 
 Route::get('/', function () {
@@ -39,4 +41,9 @@ Route::get('/jurnal-umum', [GeneralJournalController::class, 'index'])->name('jo
 Route::get('/buku-besar', [GeneralLedgerController::class, 'index'])->name('ledger.index');
 Route::get('/trial-balance', [TrialBalanceController::class, 'index'])->name('trial-balance.index');
 
+Route::get('/profit-and-loss', [ProfitAndLossController::class, 'index'])->name('profit.loss.index');
+Route::get('/profit-and-loss/print', [ProfitAndLossController::class, 'print'])->name('profit.loss.print');
+
+Route::get('/balance-sheet', [BalanceSheetController::class, 'index'])->name('balance.sheet.index');
+Route::get('/balance-sheet/print', [App\Http\Controllers\BalanceSheetController::class, 'print'])->name('balance.sheet.print');
 

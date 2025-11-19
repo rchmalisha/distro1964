@@ -202,20 +202,6 @@
           </li>
 
           <li class="mt-0.5 w-full">
-            <a
-              class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href=""> <!-- arahkan ke route aset tetap -->
-              <div
-                class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
-                <i class="fa-solid fa-building"></i>
-              </div>
-              <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">
-                Aset Tetap
-              </span>
-            </a>
-          </li>
-
-          <li class="mt-0.5 w-full">
             @php $isJournal = request()->routeIs('journal.*'); @endphp
             <a
               href="{{ route('journal.index') }}"
@@ -280,7 +266,7 @@
           <li class="mt-0.5 w-full">
             <a
               class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href=""> <!-- arahkan ke route laporan laba rugi -->
+              href="{{ route("profit.loss.index") }}"> <!-- arahkan ke route laporan laba rugi -->
               <div
                 class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
                 <i class="fa-solid fa-chart-line"></i>
@@ -294,7 +280,7 @@
           <li class="mt-0.5 w-full">
             <a
               class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href="/"> <!-- arahkan ke route neraca -->
+              href="{{ route ("balance.sheet.index") }}"> <!-- arahkan ke route neraca -->
               <div
                 class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
                 <i class="fa-solid fa-balance-scale"></i>
