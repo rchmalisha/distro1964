@@ -136,8 +136,6 @@ class SalesController extends Controller
         }
     }
 
-
-
     private function generateKodeSales()
     {
         $prefix = 'SAL-' . date('Ymd');
@@ -163,21 +161,45 @@ class SalesController extends Controller
 
 public function report(Request $request)
 {
-    // Ambil filter tanggal jika ada
-    $start_date = $request->query('start_date');
-    $end_date = $request->query('end_date');
+    // Samakan nama variabel dengan input form
+    $start_date = $request->query('tanggal_awal');
+    $end_date = $request->query('tanggal_akhir');
+    $nama_barang = $request->query('nama_barang');
+    $kategori_jasa = $request->query('kategori_jasa');
 
-    // Query penjualan berdasarkan periode + eager load detailOrders dan service
-    $sales = Sales::with('detailOrders.service'); // pastikan relasi sudah ada di model
+    $sales = Sales::with(['detailOrders.service', 'order']);
 
+    // Filter tanggal
     if ($start_date && $end_date) {
-        $sales->whereBetween('tanggal', [$start_date, $end_date]);
+        $sales->whereBetween('tgl_transaksi', [$start_date, $end_date]);
+    }
+
+    // Filter nama barang
+    if ($nama_barang) {
+        $sales->whereHas('detailOrders', function ($q) use ($nama_barang) {
+            $q->where('nama_barang', 'LIKE', "%{$nama_barang}%");
+        });
+    }
+
+    // Filter kategori jasa
+    if ($kategori_jasa && $kategori_jasa !== 'Semua') {
+        $sales->whereHas('detailOrders.service', function ($q) use ($kategori_jasa) {
+            $q->where('kategori_jasa', $kategori_jasa);
+        });
     }
 
     $sales = $sales->get();
 
-    return view('sales.report', compact('sales', 'start_date', 'end_date'));
+    return view('sales.report', [
+        'sales' => $sales,
+        'start_date' => $start_date,
+        'end_date' => $end_date,
+        'nama_barang' => $nama_barang,
+        'kategori_jasa' => $kategori_jasa,
+    ]);
 }
+
+
 
 
 

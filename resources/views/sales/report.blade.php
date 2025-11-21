@@ -4,70 +4,156 @@
     <meta charset="UTF-8">
     <title>Laporan Penjualan</title>
     <style>
-        /* Ukuran kertas A4 */
-        @page {
-            size: A4;
-            margin: 20mm;
-        }
 
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            color: #000;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 10px;
+            color: #222;
             margin: 0;
+            background: #f4f6f8;
+        }
+
+        /* Kontainer yang disesuaikan agar pas pada A4 landscape dan berada di tengah */
+        .container {
+            width: calc(297mm - 40mm); /* A4 landscape width minus page margins */
+            max-width: 100%;
+            margin: 18mm auto; /* beri jarak dari tepi untuk preview */
+            background: #fff;
+            padding: 14px 18px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+            border-radius: 6px;
+            overflow-x: hidden; /* nonaktifkan scroll horizontal di preview */
         }
 
         .header {
-            text-align: center;
-            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
         }
 
-        .header h1 {
+        .brand {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .brand h1 {
             margin: 0;
-            font-size: 18px;
+            font-size: 20px;
+            letter-spacing: 0.6px;
+            color: #111;
         }
 
-        .header p {
+        .brand p {
             margin: 2px 0 0 0;
-            font-size: 14px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .meta {
+            margin-left: auto;
+            text-align: right;
+            font-size: 13px;
+            color: #444;
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg,#333 0%,#777 100%);
+            border-radius: 6px;
+            display: inline-block;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            font-size: 12px;
+            table-layout: fixed; /* agar preview layar menyesuaikan tanpa membuat scrollbar */
         }
 
         table, th, td {
-            border: 1px solid #000;
+            border: 1px solid #e2e8f0;
         }
 
-        th, td {
-            padding: 6px 8px;
+        th {
+            background: #0f172a;
+            color: #fff;
+            font-weight: 600;
+            padding: 10px 8px;
             text-align: center;
         }
 
+        /* Pada layar: ijinkan pembungkusan supaya preview tidak memiliki scrollbar */
+        th, td { white-space: normal; word-break: break-word; }
+
+        td {
+            padding: 9px 8px;
+            vertical-align: middle;
+            color: #111827;
+        }
+
+        /* Kolom "No" dibuat lebih kecil */
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 40px !important;
+            max-width: 50px !important;
+            /* text-align: center; */
+            white-space: nowrap;
+        }
+
+
+        tbody tr:nth-child(odd) td { background: #fbfdff; }
+        tbody tr:nth-child(even) td { background: #fff; }
+
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+
         tfoot td {
-            font-weight: bold;
+            font-weight: 700;
+            background: #f1f5f9;
         }
 
-        .text-left {
-            text-align: left;
-        }
+        /* Hindari pemotongan baris tabel di halaman yang berbeda saat print */
+        thead { display: table-header-group; }
+        tfoot { display: table-footer-group; }
+        tr { page-break-inside: avoid; }
 
-        .text-right {
-            text-align: right;
+        @media print {
+            body { background: #fff; }
+            .container { box-shadow: none; margin: 0; padding: 0; width: auto; }
+            th { -webkit-print-color-adjust: exact; color-adjust: exact; }
+            .logo { display: none; }
+            .meta { font-size: 12px; }
         }
-
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>LAPORAN PENJUALAN DISTRO 1964</h1>
-        <p>Periode: {{ $start_date }} s/d {{ $end_date }}</p>
-    </div>
+    <div class="container">
+        <div class="header">
+            <div class="logo" aria-hidden="true"></div>
+            <div class="brand">
+                <h1>LAPORAN PENJUALAN DISTRO 1964</h1>
 
-    <table>
+                @if ($start_date && $end_date)
+                    <p>
+                        Periode: 
+                        {{ \Carbon\Carbon::parse($start_date)->format('d-m-Y') }}
+                        s/d
+                        {{ \Carbon\Carbon::parse($end_date)->format('d-m-Y') }}
+                    </p>
+                @else
+                    <p>Periode: - </p>
+                @endif
+            </div>
+            <div class="meta">
+                <div>Dicetak: {{ date('d-m-Y H:i:s') }}</div>
+            </div>
+        </div>
+
+        <table>
         <thead>
             <tr>
                 <th>No</th>
@@ -136,5 +222,6 @@
             </tr>
         </tfoot>
     </table>
+    </div>
 </body>
 </html>

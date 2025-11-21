@@ -27,6 +27,11 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
 
+// About Page
+Route::get('/about', function () {
+    return view('about');   // pastikan file view bernama about.blade.php
+})->name('about');
+
 Route::resource('materials', MaterialController::class);
 
 Route::get('/sign-up', [AuthController::class, 'showSignUp'])->name('sign-up.form');
