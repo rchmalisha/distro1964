@@ -27,7 +27,7 @@ class FixedAssetController extends Controller
     {
         $date = now()->format('Ymd');
         $last = FixedAsset::where('kode_aset', 'like', $date . '%')->orderBy('kode_aset', 'desc')->first();
-        
+
         $num = $last ? intval(substr($last->kode_aset, -3)) + 1 : 1;
         return $date . str_pad($num, 3, '0', STR_PAD_LEFT);
     }
