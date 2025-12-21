@@ -15,6 +15,7 @@ use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\ProfitAndLossController;
 use App\Http\Controllers\GeneralJournalController;
 use App\Http\Controllers\PurchasingController;
+use App\Http\Controllers\FixedAssetController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -89,3 +90,13 @@ Route::middleware('auth')->group(function () {
 Route::post('/purchasing/create-from-need', [App\Http\Controllers\PurchasingController::class, 'createFromNeed'])->name('purchasing.createFromNeed');
 
 Route::resource('purchasing', App\Http\Controllers\PurchasingController::class);
+
+// ======== FITUR ASET TETAP ========
+Route::middleware('auth')->group(function () {
+    Route::get('/fixed-assets', [FixedAssetController::class, 'index'])->name('fixed_assets.index');
+    Route::post('/fixed-assets', [FixedAssetController::class, 'store'])->name('fixed_assets.store');
+    Route::get('/fixed-assets/{id}/detail', [FixedAssetController::class, 'getDetail'])->name('fixed_assets.detail');
+    Route::patch('/fixed-assets/{id}', [FixedAssetController::class, 'update'])->name('fixed_assets.update');
+    Route::patch('/fixed-assets/{id}/sale', [FixedAssetController::class, 'recordSale'])->name('fixed_assets.sale');
+    Route::delete('/fixed-assets/{id}', [FixedAssetController::class, 'destroy'])->name('fixed_assets.destroy');
+});
