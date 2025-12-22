@@ -81,7 +81,7 @@
                               @error('username')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
                       </div>
 
-                      
+
 
                       <label class="mb-2 ml-1 font-bold text-xs text-slate-700">Password</label>
                         <div class="mb-4">
