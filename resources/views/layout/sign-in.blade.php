@@ -52,32 +52,47 @@
                       class="relative z-10 font-bold text-transparent bg-gradient-to-tl from-blue-600 to-cyan-400 bg-clip-text">
                       Selamat Datang!
                     </h3>
-                    <p class="mb-0">Masukkan username dan password</p>
+                      <p class="mb-0">Masukkan username atau email dan password</p>
                   </div>
                   <div class="flex-auto p-6">
+                  @if(session('berhasil'))
+                    <div class="mb-4 text-sm text-green-600">{{ session('berhasil') }}</div>
+                  @endif
+                  @if(session('status'))
+                    <div class="mb-4 text-sm text-green-600">{{ session('status') }}</div>
+                  @endif
+                  @if($errors->any())
+                    <div class="mb-4 text-sm text-red-600">{{ $errors->first() }}</div>
+                  @endif
+
                   <form action="{{ route('sign-in') }}" method="POST" role="form">
                       @csrf
 
-                      <label class="mb-2 ml-1 font-bold text-xs text-slate-700">Username</label>
-                      <div class="mb-4">
+                      <label class="mb-2 ml-1 font-bold text-xs text-slate-700">Username atau Email</label>
+                        <div class="mb-4">
                           <input
                               type="text"
                               name="username"
                               class="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow"
-                              placeholder="Username"
-                              required
+                              placeholder="Username atau Email"
+                                required
+                                value="{{ old('username') }}"
                           />
+                              @error('username')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
                       </div>
 
+                      
+
                       <label class="mb-2 ml-1 font-bold text-xs text-slate-700">Password</label>
-                      <div class="mb-4">
+                        <div class="mb-4">
                           <input
                               type="password"
                               name="password"
                               class="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow"
                               placeholder="Password"
-                              required
+                                required
                           />
+                              @error('password')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
                       </div>
 
                       <div class="min-h-6 mb-0.5 block pl-12">

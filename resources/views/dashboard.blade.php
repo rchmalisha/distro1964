@@ -1,10 +1,9 @@
 @extends('layout.main')
 @section('title', 'Dashboard')
 @section('content')
-      <!-- cards -->
-      <div class="w-full px-6 py-6 mx-auto">
-        <!-- row 1 -->
-        <div class="flex flex-wrap -mx-3">
+<div class="w-full px-6 py-6 mx-auto">
+  <div class="flex flex-wrap -mx-3">
+
           <!-- card1 -->
           <div
             class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
@@ -14,24 +13,14 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p
-                        class="mb-0 font-sans text-sm font-semibold leading-normal">
-                        Today's Money
-                      </p>
-                      <h5 class="mb-0 font-bold">
-                        $53,000
-                        <span
-                          class="text-sm leading-normal font-weight-bolder text-lime-500"
-                          >+55%</span
-                        >
-                      </h5>
+                      <p class="mb-0 font-sans text-sm font-semibold leading-normal">Total Penjualan</p>
+                      <h5 class="mb-0 font-bold"><span id="cardSales">0</span></h5>
                     </div>
                   </div>
                   <div class="px-3 text-right basis-1/3">
                     <div
                       class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                      <i
-                        class="ni leading-none ni-money-coins text-lg relative top-3.5 text-white"></i>
+                      <i class="ni leading-none ni-money-coins text-lg relative top-3.5 text-white"></i>
                     </div>
                   </div>
                 </div>
@@ -48,24 +37,14 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p
-                        class="mb-0 font-sans text-sm font-semibold leading-normal">
-                        Today's Users
-                      </p>
-                      <h5 class="mb-0 font-bold">
-                        2,300
-                        <span
-                          class="text-sm leading-normal font-weight-bolder text-lime-500"
-                          >+3%</span
-                        >
-                      </h5>
+                      <p class="mb-0 font-sans text-sm font-semibold leading-normal">Pendapatan</p>
+                      <h5 class="mb-0 font-bold"><span id="cardRevenue">0</span></h5>
                     </div>
                   </div>
                   <div class="px-3 text-right basis-1/3">
                     <div
                       class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                      <i
-                        class="ni leading-none ni-world text-lg relative top-3.5 text-white"></i>
+                      <i class="ni leading-none ni-world text-lg relative top-3.5 text-white"></i>
                     </div>
                   </div>
                 </div>
@@ -82,17 +61,8 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p
-                        class="mb-0 font-sans text-sm font-semibold leading-normal">
-                        New Clients
-                      </p>
-                      <h5 class="mb-0 font-bold">
-                        +3,462
-                        <span
-                          class="text-sm leading-normal text-red-600 font-weight-bolder"
-                          >-2%</span
-                        >
-                      </h5>
+                      <p class="mb-0 font-sans text-sm font-semibold leading-normal">Aset Aktif</p>
+                      <h5 class="mb-0 font-bold"><span id="cardAssets">0</span></h5>
                     </div>
                   </div>
                   <div class="px-3 text-right basis-1/3">
@@ -115,17 +85,8 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p
-                        class="mb-0 font-sans text-sm font-semibold leading-normal">
-                        Sales
-                      </p>
-                      <h5 class="mb-0 font-bold">
-                        $103,430
-                        <span
-                          class="text-sm leading-normal font-weight-bolder text-lime-500"
-                          >+5%</span
-                        >
-                      </h5>
+                      <p class="mb-0 font-sans text-sm font-semibold leading-normal">Nilai Aset</p>
+                      <h5 class="mb-0 font-bold"><span id="cardAssetValue">0</span></h5>
                     </div>
                   </div>
                   <div class="px-3 text-right basis-1/3">
@@ -141,25 +102,34 @@
           </div>
         </div>
 
-        <!-- cards row 2 -->
+  </div>
+</div>
 
-        <!-- cards row 3 -->
+        <!-- cards row 2 -->
 
         <div class="flex flex-wrap mt-6 -mx-3">
           <div class="w-full max-w-full px-3 mt-0 lg:w-7/12 lg:flex-none">
-            <div
-              class="border-black/12.5 shadow-soft-xl relative z-20 flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
-              <div
-                class="border-black/12.5 mb-0 rounded-t-2xl border-b-0 border-solid bg-white p-6 pb-0">
-                <h6>Sales overview</h6>
-                <p class="text-sm leading-normal">
-                  <i class="fa fa-arrow-up text-lime-500"></i>
-                  <span class="font-semibold">4% more</span> in 2021
-                </p>
+            <div class="border-black/12.5 shadow-soft-xl relative z-20 flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
+              <div class="border-black/12.5 mb-0 rounded-t-2xl border-b-0 border-solid bg-white p-6 pb-0">
+                <h6>Jumlah Penjualan</h6>
               </div>
               <div class="flex-auto p-4">
                 <div>
-                  <canvas id="chart-line" height="300"></canvas>
+                  <div style="height:320px">
+                    <canvas id="salesChart" style="width:100%;height:100%"></canvas>
+                  </div>
+
+                  <!-- small summary below the chart -->
+                  <div class="mt-4 flex items-center justify-between text-sm text-gray-600">
+                    <div>
+                      <div class="text-xs text-gray-500">Total Penjualan</div>
+                      <div id="chartTotalSales" class="font-semibold">0</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500">Total Pendapatan</div>
+                      <div id="chartTotalRevenue" class="font-semibold">Rp 0</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -173,139 +143,7 @@
 
           <!-- card 2 -->
 
-          <div
-            class="w-full max-w-full px-3 md:w-1/2 md:flex-none lg:w-1/3 lg:flex-none">
-            <div
-              class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
-              <div
-                class="border-black/12.5 mb-0 rounded-t-2xl border-b-0 border-solid bg-white p-6 pb-0">
-                <h6>Orders overview</h6>
-                <p class="text-sm leading-normal">
-                  <i class="fa fa-arrow-up text-lime-500"></i>
-                  <span class="font-semibold">24%</span> this month
-                </p>
-              </div>
-              <div class="flex-auto p-4">
-                <div
-                  class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
-                  <div
-                    class="relative mb-4 mt-0 after:clear-both after:table after:content-['']">
-                    <span
-                      class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                      <i
-                        class="relative z-10 leading-none text-transparent ni ni-bell-55 leading-pro bg-gradient-to-tl from-green-600 to-lime-400 bg-clip-text fill-transparent"></i>
-                    </span>
-                    <div
-                      class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                      <h6
-                        class="mb-0 text-sm font-semibold leading-normal text-slate-700">
-                        $2400, Design changes
-                      </h6>
-                      <p
-                        class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">
-                        22 DEC 7:20 PM
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="relative mb-4 after:clear-both after:table after:content-['']">
-                    <span
-                      class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                      <i
-                        class="relative z-10 leading-none text-transparent ni ni-html5 leading-pro bg-gradient-to-tl from-red-600 to-rose-400 bg-clip-text fill-transparent"></i>
-                    </span>
-                    <div
-                      class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                      <h6
-                        class="mb-0 text-sm font-semibold leading-normal text-slate-700">
-                        New order #1832412
-                      </h6>
-                      <p
-                        class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">
-                        21 DEC 11 PM
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="relative mb-4 after:clear-both after:table after:content-['']">
-                    <span
-                      class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                      <i
-                        class="relative z-10 leading-none text-transparent ni ni-cart leading-pro bg-gradient-to-tl from-blue-600 to-cyan-400 bg-clip-text fill-transparent"></i>
-                    </span>
-                    <div
-                      class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                      <h6
-                        class="mb-0 text-sm font-semibold leading-normal text-slate-700">
-                        Server payments for April
-                      </h6>
-                      <p
-                        class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">
-                        21 DEC 9:34 PM
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="relative mb-4 after:clear-both after:table after:content-['']">
-                    <span
-                      class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                      <i
-                        class="relative z-10 leading-none text-transparent ni ni-credit-card leading-pro bg-gradient-to-tl from-red-500 to-yellow-400 bg-clip-text fill-transparent"></i>
-                    </span>
-                    <div
-                      class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                      <h6
-                        class="mb-0 text-sm font-semibold leading-normal text-slate-700">
-                        New card added for order #4395133
-                      </h6>
-                      <p
-                        class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">
-                        20 DEC 2:20 AM
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="relative mb-4 after:clear-both after:table after:content-['']">
-                    <span
-                      class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                      <i
-                        class="relative z-10 leading-none text-transparent ni ni-key-25 leading-pro bg-gradient-to-tl from-purple-700 to-pink-500 bg-clip-text fill-transparent"></i>
-                    </span>
-                    <div
-                      class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                      <h6
-                        class="mb-0 text-sm font-semibold leading-normal text-slate-700">
-                        Unlock packages for development
-                      </h6>
-                      <p
-                        class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">
-                        18 DEC 4:54 AM
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="relative mb-0 after:clear-both after:table after:content-['']">
-                    <span
-                      class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                      <i
-                        class="relative z-10 leading-none text-transparent ni ni-money-coins leading-pro bg-gradient-to-tl from-gray-900 to-slate-800 bg-clip-text fill-transparent"></i>
-                    </span>
-                    <div
-                      class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                      <h6
-                        class="mb-0 text-sm font-semibold leading-normal text-slate-700">
-                        New order #9583120
-                      </h6>
-                      <p
-                        class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">
-                        17 DEC
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!-- Orders overview (bottom) removed as requested -->
         </div>
 
         <footer class="pt-4">
@@ -371,4 +209,95 @@
         </footer>
       </div>
       <!-- end cards -->
-@endsection
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const fmt = (v) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(v || 0);
+
+      // keep summary values in variables for chart summary below
+      let latestSummary = null;
+      fetch('/dashboard/data/summary')
+        .then(r => r.json())
+        .then(d => {
+          latestSummary = d;
+          document.getElementById('cardSales').textContent = d.totalSales;
+          document.getElementById('cardRevenue').textContent = fmt(d.totalRevenue);
+          document.getElementById('cardAssets').textContent = d.activeAssets;
+          document.getElementById('cardAssetValue').textContent = fmt(d.assetValue);
+          // Also populate the chart summary placeholders if present
+          if (document.getElementById('chartTotalSales')) {
+            document.getElementById('chartTotalSales').textContent = d.totalSales;
+          }
+          if (document.getElementById('chartTotalRevenue')) {
+            document.getElementById('chartTotalRevenue').textContent = fmt(d.totalRevenue);
+          }
+        }).catch(console.error);
+
+      // sales bar chart only
+      fetch('/dashboard/data/sales-monthly')
+        .then(r => r.json())
+        .then(p => {
+          const container = document.getElementById('salesChart').parentElement;
+          if (!p.hasData) {
+            container.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Tidak ada data penjualan.</div>';
+            return;
+          }
+
+          const canvas = document.getElementById('salesChart');
+          const ctx = canvas.getContext('2d');
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height || 320);
+          gradient.addColorStop(0, 'rgba(79,70,229,0.9)');
+          gradient.addColorStop(1, 'rgba(79,70,229,0.5)');
+
+          if (window._salesChartInstance) window._salesChartInstance.destroy();
+
+          window._salesChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: p.labels, datasets: [{ label: 'Jumlah Penjualan', data: p.data, backgroundColor: gradient, borderRadius: 8, barThickness: 24 }] },
+            options: {
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} penjualan` } } },
+              scales: { x: { ticks: { maxRotation: 0, autoSkip: false } }, y: { beginAtZero: true } }
+            }
+          });
+
+          if (latestSummary) {
+            if (document.getElementById('chartTotalSales')) document.getElementById('chartTotalSales').textContent = latestSummary.totalSales;
+            if (document.getElementById('chartTotalRevenue')) document.getElementById('chartTotalRevenue').textContent = fmt(latestSummary.totalRevenue);
+          }
+
+        }).catch(err => { console.error(err); /* do not display a misleading error message */ });
+
+      // recent activity (skip if the element is not on the page)
+      fetch('/dashboard/data/recent-activity')
+        .then(r => r.json())
+        .then(items => {
+          const el = document.getElementById('recentActivity');
+          if (!el) return; // element removed; nothing to render
+          if (!items || items.length === 0) {
+            el.innerHTML = '<div class="text-sm text-gray-500">Tidak ada aktivitas terbaru.</div>';
+            return;
+          }
+          const list = document.createElement('div');
+          list.className = 'space-y-3';
+          items.forEach(it => {
+            const when = new Date(it.date);
+            const row = document.createElement('div');
+            row.className = 'flex items-start gap-3';
+            row.innerHTML = `
+              <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-sm">${it.type ? it.type.charAt(0).toUpperCase() : '•'}</div>
+              <div class="flex-1">
+                <div class="text-sm font-medium">${it.ref || it.title || 'Aktivitas'}</div>
+                <div class="text-xs text-gray-500">${when.toLocaleString()}</div>
+              </div>
+              <div class="text-sm text-gray-700">${it.amount ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(it.amount) : (it.meta || '')}</div>
+            `;
+            list.appendChild(row);
+          });
+          el.innerHTML = '';
+          el.appendChild(list);
+        }).catch(console.error);
+
+    });
+    </script>
+    @endsection

@@ -9,6 +9,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\MaterialNeedsController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TrialBalanceController;
 use App\Http\Controllers\GeneralLedgerController;
 use App\Http\Controllers\BalanceSheetController;
@@ -24,9 +25,11 @@ Route::get('/', function () {
     return redirect()->route('sign-in.form');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('auth')->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
+Route::get('/dashboard/data/sales-monthly', [DashboardController::class, 'salesMonthly'])->middleware('auth');
+Route::get('/dashboard/data/revenue-monthly', [DashboardController::class, 'revenueMonthly'])->middleware('auth');
+Route::get('/dashboard/data/summary', [DashboardController::class, 'summary'])->middleware('auth');
+Route::get('/dashboard/data/recent-activity', [DashboardController::class, 'recentActivity'])->middleware('auth');
 
 // About Page
 Route::get('/about', function () {
@@ -41,6 +44,8 @@ Route::post('/sign-up', [AuthController::class, 'signUp'])->name('sign-up');
 Route::get('/sign-in', [AuthController::class, 'showSignIn'])->name('sign-in.form');
 Route::post('/sign-in', [AuthController::class, 'signIn'])->name('sign-in');
 Route::redirect('/login', '/sign-in')->name('login');
+
+// password reset routes removed per request
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -92,9 +97,9 @@ Route::middleware('auth')->group(function () {
 
 });
 
-Route::post('/purchasing/create-from-need', [App\Http\Controllers\PurchasingController::class, 'createFromNeed'])->name('purchasing.createFromNeed');
+Route::post('/purchasing/create-from-need', [PurchasingController::class, 'createFromNeed'])->name('purchasing.createFromNeed');
 
-Route::resource('purchasing', App\Http\Controllers\PurchasingController::class);
+Route::resource('purchasing',PurchasingController::class);
 
 // ======== FITUR ASET TETAP ========
 Route::middleware('auth')->group(function () {
