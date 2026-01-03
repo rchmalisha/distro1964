@@ -8,13 +8,14 @@ use App\Http\Controllers\SalesController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\MaterialController;
-use App\Http\Controllers\MaterialNeedsController;
+use App\Http\Controllers\PurchasingController;
+use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\TrialBalanceController;
 use App\Http\Controllers\GeneralLedgerController;
-use App\Http\Controllers\BalanceSheetController;
+use App\Http\Controllers\MaterialNeedsController;
 use App\Http\Controllers\ProfitAndLossController;
 use App\Http\Controllers\GeneralJournalController;
-use App\Http\Controllers\PurchasingController;
+use App\Http\Controllers\GeneralTransactionController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -83,9 +84,15 @@ Route::middleware('auth')->group(function () {
     Route::post('sales', [SalesController::class, 'store'])->name('sales.store');
     Route::get('/sales/print', [SalesController::class, 'report'])->name('sales.report');
     Route::get('/sales/cetak_nota/{kode_jual}', [SalesController::class, 'print'])->name('sales.print');
-
 });
 
 Route::post('/purchasing/create-from-need', [App\Http\Controllers\PurchasingController::class, 'createFromNeed'])->name('purchasing.createFromNeed');
 
 Route::resource('purchasing', App\Http\Controllers\PurchasingController::class);
+
+// Rute Transaksi Umum
+Route::get('/general-transaction', [GeneralTransactionController::class, 'index'])->name('general-transaction.index');
+Route::post('/general-transaction', [GeneralTransactionController::class, 'store'])->name('general-transaction.store');
+Route::get('/general-transaction/{id}/edit', [GeneralTransactionController::class, 'edit'])->name('general-transaction.edit');
+Route::put('/general-transaction/{id}', [GeneralTransactionController::class, 'update'])->name('general-transaction.update');
+Route::delete('/general-transaction/{id}', [GeneralTransactionController::class, 'destroy'])->name('general-transaction.destroy');
