@@ -94,9 +94,9 @@
                     <thead class="bg-slate-100 text-sm uppercase font-semibold">
                         <tr>
                             <th class="px-6 py-3 border border-slate-200 text-left w-1/4">Aset</th>
-                            <th class="px-6 py-3 border border-slate-200 text-right w-1/4">Jumlah (Rp)</th>
+                            <th class="px-6 py-3 border border-slate-200 text-right w-1/4">Jumlah</th>
                             <th class="px-6 py-3 border border-slate-200 text-left w-1/4">Liabilitas & Ekuitas</th>
-                            <th class="px-6 py-3 border border-slate-200 text-right w-1/4">Jumlah (Rp)</th>
+                            <th class="px-6 py-3 border border-slate-200 text-right w-1/4">Jumlah</th>
                         </tr>
                     </thead>
 
@@ -117,13 +117,13 @@
                                 {{ $aset_lancar[$i]->nama_akun ?? '' }}
                             </td>
                             <td class="text-right px-6 py-2 border-r border-slate-200">
-                                {{ isset($aset_lancar[$i]) ? 'Rp ' . number_format($aset_lancar[$i]->saldo, 0, ',', '.') : '' }}
+                                {{ isset($aset_lancar[$i]) ? number_format($aset_lancar[$i]->saldo, 0, ',', '.') : '' }}
                             </td>
                             <td class="pl-10 py-2 border-r border-slate-200">
                                 {{ $liabilitas[$i]->nama_akun ?? '' }}
                             </td>
                             <td class="text-right px-6 py-2">
-                                {{ isset($liabilitas[$i]) ? 'Rp ' . number_format($liabilitas[$i]->saldo, 0, ',', '.') : '' }}
+                                {{ isset($liabilitas[$i]) ? number_format($liabilitas[$i]->saldo, 0, ',', '.') : '' }}
                             </td>
                             </tr>
                             @endfor
@@ -131,11 +131,11 @@
                             <tr class="bg-slate-100 font-bold border-t border-b border-slate-200">
                                 <td class="px-6 py-3 border-r border-slate-200">Total Aset Lancar</td>
                                 <td class="text-right px-6 py-3 border-r border-slate-200">
-                                    Rp {{ number_format($total_aset_lancar, 0, ',', '.') }}
+                                    {{ number_format($total_aset_lancar, 0, ',', '.') }}
                                 </td>
                                 <td class="px-6 py-3 border-r border-slate-200">Total Liabilitas</td>
                                 <td class="text-right px-6 py-3">
-                                    Rp {{ number_format($total_liabilitas, 0, ',', '.') }}
+                                    {{ number_format($total_liabilitas, 0, ',', '.') }}
                                 </td>
                             </tr>
 
@@ -165,9 +165,9 @@
                                     @endphp
 
                                     @if($saldo < 0)
-                                        (Rp {{ number_format(abs($saldo), 0, ',', '.') }})
+                                        ({{ number_format(abs($saldo), 0, ',', '.') }})
                                         @else
-                                        Rp {{ number_format($saldo, 0, ',', '.') }}
+                                        {{ number_format($saldo, 0, ',', '.') }}
                                         @endif
                                         @endif
                                         </td>
@@ -185,9 +185,9 @@
                                     @endphp
 
                                     @if($saldo < 0)
-                                        (Rp {{ number_format(abs($saldo), 0, ',', '.') }})
+                                        ({{ number_format(abs($saldo), 0, ',', '.') }})
                                         @else
-                                        Rp {{ number_format($saldo, 0, ',', '.') }}
+                                        {{ number_format($saldo, 0, ',', '.') }}
                                         @endif
                                         @endif
                                         </td>
@@ -197,11 +197,11 @@
                                         <tr class="bg-slate-100 font-bold border-t border-b border-slate-200">
                                             <td class="px-6 py-3 border-r border-slate-200">Total Aset Tetap</td>
                                             <td class="text-right px-6 py-3 border-r border-slate-200">
-                                                Rp {{ number_format($total_aset_tetap, 0, ',', '.') }}
+                                                {{ number_format($total_aset_tetap, 0, ',', '.') }}
                                             </td>
                                             <td class="px-6 py-3 border-r border-slate-200">Total Ekuitas</td>
                                             <td class="text-right px-6 py-3">
-                                                Rp {{ number_format($total_ekuitas, 0, ',', '.') }}
+                                                {{ number_format($total_ekuitas, 0, ',', '.') }}
                                             </td>
                                         </tr>
 
@@ -209,11 +209,11 @@
                                         <tr class="bg-blue-100 font-extrabold border-t-2 border-slate-700">
                                             <td class="px-6 py-4 border-r border-slate-200 uppercase">Total Aset</td>
                                             <td class="text-right px-6 py-4 border-r border-slate-200">
-                                                Rp {{ number_format($total_aset, 0, ',', '.') }}
+                                                {{ number_format($total_aset, 0, ',', '.') }}
                                             </td>
                                             <td class="px-6 py-4 border-r border-slate-200 uppercase">Total Liabilitas & Ekuitas</td>
                                             <td class="text-right px-6 py-4">
-                                                Rp {{ number_format($total_liabilitas_ekuitas, 0, ',', '.') }}
+                                                {{ number_format($total_liabilitas_ekuitas, 0, ',', '.') }}
                                             </td>
                                         </tr>
 

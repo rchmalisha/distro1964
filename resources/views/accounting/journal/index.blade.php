@@ -119,7 +119,7 @@
                                     {{-- Kolom Debet --}}
                                     <td class="px-6 py-3 border border-slate-200 text-right">
                                         @if ($detail->debit > 0)
-                                            Rp {{ number_format($detail->debit, 0, ',', '.') }}
+                                            {{ number_format($detail->debit, 0, ',', '.') }}
                                         @else
                                             &nbsp; 
                                         @endif
@@ -128,7 +128,7 @@
                                     {{-- Kolom Kredit --}}
                                     <td class="px-6 py-3 border border-slate-200 text-right">
                                         @if ($detail->kredit > 0)
-                                            Rp {{ number_format($detail->kredit, 0, ',', '.') }}
+                                            {{ number_format($detail->kredit, 0, ',', '.') }}
                                         @else
                                             &nbsp; 
                                         @endif

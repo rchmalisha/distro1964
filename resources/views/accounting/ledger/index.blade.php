@@ -134,7 +134,7 @@
                                     {{-- Debit (Kosongkan jika Saldo Awal) --}}
                                     <td class="px-6 py-3 border border-slate-200 text-right whitespace-nowrap">
                                         @if (!$isInitialBalance && $ledger->debit > 0)
-                                            Rp {{ number_format($ledger->debit, 0, ',', '.') }}
+                                            {{ number_format($ledger->debit, 0, ',', '.') }}
                                         @else
                                             &nbsp; 
                                         @endif
@@ -142,14 +142,14 @@
                                     {{-- Kredit (Kosongkan jika Saldo Awal) --}}
                                     <td class="px-6 py-3 border border-slate-200 text-right whitespace-nowrap">
                                         @if (!$isInitialBalance && $ledger->kredit > 0)
-                                            Rp {{ number_format($ledger->kredit, 0, ',', '.') }}
+                                            {{ number_format($ledger->kredit, 0, ',', '.') }}
                                         @else
                                             &nbsp; 
                                         @endif
                                     </td>
                                     {{-- Saldo --}}
                                     <td class="px-6 py-3 border border-slate-200 text-right font-semibold whitespace-nowrap">
-                                        Rp {{ number_format($ledger->saldo, 0, ',', '.') }}
+                                        {{ number_format($ledger->saldo, 0, ',', '.') }}
                                     </td>
                                 </tr>
                             @empty

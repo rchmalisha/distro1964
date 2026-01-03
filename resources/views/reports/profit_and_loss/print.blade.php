@@ -94,7 +94,7 @@
                 <td class="px-6 py-3">Pendapatan</td>
                 <td class="px-6 py-3"></td>
                 <td class="px-6 py-3 text-right">
-                    Rp {{ number_format($pendapatan ?? 0, 0, ',', '.') }}
+                    {{ number_format($pendapatan ?? 0, 0, ',', '.') }}
                 </td>
             </tr>
 
@@ -125,14 +125,14 @@
                 <td class="px-10 py-2">Biaya Bahan Habis Pakai</td>
                 <td class="px-6 py-2"></td>
                 <td class="px-6 py-2 text-right">
-                    Rp {{ number_format($total_bahan_habis_pakai, 0, ',', '.') }}
+                    {{ number_format($total_bahan_habis_pakai, 0, ',', '.') }}
                 </td>
             </tr>
 
             <tr>
                 <td class="px-14 py-2">DTF</td>
                 <td class="px-6 py-2 text-right">
-                    Rp {{ number_format($biaya_dtf ?? 0, 0, ',', '.') }}
+                    {{ number_format($biaya_dtf ?? 0, 0, ',', '.') }}
                 </td>
                 <td></td>
             </tr>
@@ -140,7 +140,7 @@
             <tr>
                 <td class="px-14 py-2">Polyflex Standar</td>
                 <td class="px-6 py-2 text-right">
-                    Rp {{ number_format($biaya_polyflex_standar ?? 0, 0, ',', '.') }}
+                    {{ number_format($biaya_polyflex_standar ?? 0, 0, ',', '.') }}
                 </td>
                 <td></td>
             </tr>
@@ -148,7 +148,7 @@
             <tr>
                 <td class="px-14 py-2">Polyflex Stabilo</td>
                 <td class="px-6 py-2 text-right">
-                    Rp {{ number_format($biaya_polyflex_stabilo ?? 0, 0, ',', '.') }}
+                    {{ number_format($biaya_polyflex_stabilo ?? 0, 0, ',', '.') }}
                 </td>
                 <td></td>
             </tr>
@@ -156,7 +156,7 @@
             <tr>
                 <td class="px-14 py-2">Polyflex Reflective</td>
                 <td class="px-6 py-2 text-right">
-                    Rp {{ number_format($biaya_polyflex_reflective ?? 0, 0, ',', '.') }}
+                    {{ number_format($biaya_polyflex_reflective ?? 0, 0, ',', '.') }}
                 </td>
                 <td></td>
             </tr>
@@ -164,7 +164,7 @@
             <tr>
                 <td class="px-14 py-2">Polyflex Gold</td>
                 <td class="px-6 py-2 text-right">
-                    Rp {{ number_format($biaya_polyflex_gold ?? 0, 0, ',', '.') }}
+                    {{ number_format($biaya_polyflex_gold ?? 0, 0, ',', '.') }}
                 </td>
                 <td></td>
             </tr>
@@ -172,7 +172,7 @@
             <tr>
                 <td class="px-14 py-2">Polyflex Silver</td>
                 <td class="px-6 py-2 text-right">
-                    Rp {{ number_format($biaya_polyflex_silver ?? 0, 0, ',', '.') }}
+                    {{ number_format($biaya_polyflex_silver ?? 0, 0, ',', '.') }}
                 </td>
                 <td></td>
             </tr>
@@ -180,7 +180,7 @@
             <tr>
                 <td class="px-14 py-2">Kantong Kresek</td>
                 <td class="px-6 py-2 text-right">
-                    Rp {{ number_format($biaya_kantong_kresek ?? 0, 0, ',', '.') }}
+                    {{ number_format($biaya_kantong_kresek ?? 0, 0, ',', '.') }}
                 </td>
                 <td></td>
             </tr>
@@ -190,14 +190,14 @@
                 <td class="px-10 py-2">Biaya Operasional</td>
                 <td class="px-6 py-2"></td>
                 <td class="px-6 py-2 text-right">
-                    Rp {{ number_format($total_operasional, 0, ',', '.') }}
+                    {{ number_format($total_operasional, 0, ',', '.') }}
                 </td>
             </tr>
 
             <tr>
                 <td class="px-14 py-2">Listrik & Internet</td>
                 <td class="px-6 py-2 text-right">
-                    Rp {{ number_format($biaya_listrik_internet ?? 0, 0, ',', '.') }}
+                    {{ number_format($biaya_listrik_internet ?? 0, 0, ',', '.') }}
                 </td>
                 <td></td>
             </tr>
@@ -205,7 +205,7 @@
             <tr>
                 <td class="px-14 py-2">Tinta Printer DTF</td>
                 <td class="px-6 py-2 text-right">
-                    Rp {{ number_format($biaya_tinta_dtf ?? 0, 0, ',', '.') }}
+                    {{ number_format($biaya_tinta_dtf ?? 0, 0, ',', '.') }}
                 </td>
                 <td></td>
             </tr>
@@ -215,7 +215,7 @@
                 <td class="px-6 py-3">Total Biaya</td>
                 <td class="px-6 py-3"></td>
                 <td class="px-6 py-3 text-right">
-                    Rp {{ number_format($total_biaya ?? ($total_bahan_habis_pakai + $total_operasional), 0, ',', '.') }}
+                    {{ number_format($total_biaya ?? ($total_bahan_habis_pakai + $total_operasional), 0, ',', '.') }}
                 </td>
             </tr>
 
@@ -229,7 +229,7 @@
             </td>
             <td class="px-6 py-4"></td>
             <td class="px-6 py-4 text-right">
-                Rp {{ number_format(abs($hasil), 0, ',', '.') }}
+                {{ number_format(abs($hasil), 0, ',', '.') }}
             </td>
             </tr>
         </tbody>

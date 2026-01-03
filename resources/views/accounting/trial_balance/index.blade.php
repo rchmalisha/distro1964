@@ -98,10 +98,10 @@
                                 <td class="px-6 py-3 border border-slate-200">{{ $row->kode_akun }}</td>
                                 <td class="px-6 py-3 border border-slate-200">{{ $row->nama_akun }}</td>
                                 <td class="px-6 py-3 border border-slate-200 text-right">
-                                    {{ $d ? 'Rp '.number_format($d, 0, ',', '.') : '' }}
+                                    {{ $d ? number_format($d, 0, ',', '.') : '' }}
                                 </td>
                                 <td class="px-6 py-3 border border-slate-200 text-right">
-                                    {{ $k ? 'Rp '.number_format($k, 0, ',', '.') : '' }}
+                                    {{ $k ? number_format($k, 0, ',', '.') : '' }}
                                 </td>
                             </tr>
                         @empty
@@ -120,10 +120,10 @@
                             <tr class="bg-slate-100 font-bold border-t">
                                 <td colspan="2" class="px-6 py-3 border border-slate-200 text-right uppercase">Total</td>
                                 <td class="px-6 py-3 border border-slate-200 text-right">
-                                    Rp {{ number_format($totalDebit, 0, ',', '.') }}
+                                    {{ number_format($totalDebit, 0, ',', '.') }}
                                 </td>
                                 <td class="px-6 py-3 border border-slate-200 text-right">
-                                    Rp {{ number_format($totalKredit, 0, ',', '.') }}
+                                    {{ number_format($totalKredit, 0, ',', '.') }}
                                 </td>
                             </tr>
 
@@ -131,7 +131,7 @@
                                 <tr class="bg-red-50 text-red-700 font-bold">
                                     <td colspan="4" class="px-6 py-3 text-center">
                                         Neraca tidak seimbang!  
-                                        Selisih: Rp {{ number_format(abs($totalDebit - $totalKredit), 0, ',', '.') }}
+                                        Selisih: {{ number_format(abs($totalDebit - $totalKredit), 0, ',', '.') }}
                                     </td>
                                 </tr>
                             @endif

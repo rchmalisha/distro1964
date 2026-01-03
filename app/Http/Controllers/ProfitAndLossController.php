@@ -32,6 +32,10 @@ class ProfitAndLossController extends Controller
         $plService = new ProfitLossService($month, $year);
         $data = $plService->calculate();
 
-        return view('reports.profit_and_loss.print', $data); // HTML view, bukan PDF
+        // Sertakan month & year
+        $data['month'] = $month;
+        $data['year'] = $year;
+
+        return view('reports.profit_and_loss.print', $data);
     }
 }
