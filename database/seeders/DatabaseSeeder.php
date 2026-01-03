@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,13 +14,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Create a default user compatible with current users table (username exists, name column removed)
+        User::firstOrCreate([
+            'email' => 'test@example.com'
+        ], [
+            'username' => 'admin',
+            'password' => Hash::make('password'),
         ]);
 
         $this->call(AkunSeeder::class);
+        // Demo/test data for dashboard and functional testing
+        $this->call(DemoDataSeeder::class);
     }
 }

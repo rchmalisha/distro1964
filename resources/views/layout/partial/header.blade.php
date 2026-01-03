@@ -67,6 +67,31 @@
                 class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Dashboard</span>
             </a>
           </li>
+          <li class="mt-0.5 w-full">
+              @php $isAbout = request()->routeIs('about'); @endphp
+              <a
+                href="{{ route('about') }}"
+                class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap rounded-lg px-4 transition-colors
+                  {{ $isAbout ? 'bg-white text-slate-700 shadow-soft-xl font-bold' : 'bg-transparent text-slate-500 font-normal' }}
+                  hover:bg-white hover:text-slate-700 hover:shadow-soft-xl">
+
+                <div
+                  class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5
+                    {{ $isAbout ? 'bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl text-white' : 'shadow-soft-2xl bg-white text-slate-500' }}">
+                  
+                  <!-- Icon Info -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-info-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469L6.684 10.5h.825l.545-2.466c.064-.293.118-.398.412-.469l.451-.083-.082-.38zm-.81-1.812a.565.565 0 1 0 0-1.13.565.565 0 0 0 0 1.13z"/>
+                  </svg>
+                </div>
+
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">
+                  About Us
+                </span>
+              </a>
+          </li>
 
           <!-- Data Master Section -->
           <li class="w-full mt-4">
@@ -172,6 +197,28 @@
               </div>
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">
                 Penjualan
+              </span>
+            </a>
+          </li>
+
+          <!-- Aset Tetap Section -->
+          <li class="w-full mt-4">
+            <h6
+              class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">
+              Aset
+            </h6>
+          </li>
+
+          <li class="mt-0.5 w-full">
+            <a
+              class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
+              href="{{ route('fixed_assets.index') }}"> <!-- arahkan ke route aset tetap -->
+              <div
+                class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-center xl:p-2.5">
+                <i class="fa-solid fa-building"></i>
+              </div>
+              <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">
+                Aset Tetap
               </span>
             </a>
           </li>
