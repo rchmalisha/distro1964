@@ -12,23 +12,27 @@
                 <span class="inline-block bg-white bg-opacity-20 p-2 rounded-lg mb-2">
                     <i class="fa-solid fa-balance-scale text-2xl text-slate-700"></i>
                 </span>
-                
+
                 <h2 class="text-2xl font-bold text-slate-700 tracking-tight mb-1 drop-shadow">
                     Neraca
                 </h2>
-                
-                @if(isset($month) && isset($year))
-                @if($month == 'all')
-                <span class="text-base font-semibold ">
+
+                @if(request()->filled('month') && request()->filled('year'))
+                @if($month === 'all')
+                <span class="text-base font-semibold">
                     Periode: Januari - Desember {{ $year }}
                 </span>
                 @else
-                <span class="text-base font-semibold ">
-                    Periode: {{ \Carbon\Carbon::createFromDate($year, $month, 1)->locale('id')->translatedFormat('F Y') }}
+                <span class="text-base font-semibold">
+                    Periode: {{ \Carbon\Carbon::createFromDate($year, $month, 1)
+                ->locale('id')
+                ->translatedFormat('F Y') }}
                 </span>
                 @endif
+
                 <span class="text-sm">(dalam Rupiah)</span>
                 @endif
+
             </div>
         </div>
 
@@ -49,14 +53,23 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1 text-gray-700">Tahun</label>
-                    <select name="year" class="border rounded-lg px-3 py-2 w-32 focus:border-slate-700 focus:ring-slate-700">
-                        <option value="">-- Pilih Tahun --</option>
+                    <select name="year"
+                        class="border rounded-lg px-3 py-2 w-32 focus:border-slate-700 focus:ring-slate-700">
+
+                        <option value="" {{ !request()->filled('year') ? 'selected' : '' }}>
+                            Pilih Tahun
+                        </option>
+
                         @foreach (range(date('Y')-5, date('Y')) as $y)
-                        <option value="{{ $y }}" {{ (isset($year) && $y == $year) ? 'selected' : '' }}>{{ $y }}</option>
+                        <option value="{{ $y }}"
+                            {{ request()->filled('year') && $y == $year ? 'selected' : '' }}>
+                            {{ $y }}
+                        </option>
                         @endforeach
                     </select>
+
                 </div>
-                
+
                 <div class="flex gap-2">
                     <button type="submit"
                         class="bg-slate-700 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition text-sm font-medium">
@@ -74,7 +87,7 @@
             </div>
         </form>
 
-        {{-- Table Laporan (Sesuai Acuan: border border-slate-200 shadow rounded-2xl bg-white) --}}
+        @if(request()->filled('month') && request()->filled('year')) {{-- Table Neraca --}}
         <div class="border border-slate-200 shadow rounded-2xl bg-white">
             <div class="overflow-x-auto">
                 <table class="items-center w-full text-slate-600 border-collapse min-w-[800px]">
@@ -86,8 +99,9 @@
                             <th class="px-6 py-3 border border-slate-200 text-right w-1/4">Jumlah (Rp)</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        {{-- Aset Lancar & Liabilitas --}}
+                        {{-- ================= ASET LANCAR & LIABILITAS ================= --}}
                         <tr class="bg-gray-50 font-semibold border-b border-slate-200">
                             <td colspan="2" class="px-6 py-3 border-r border-slate-200">Aset Lancar</td>
                             <td colspan="2" class="px-6 py-3">Liabilitas</td>
@@ -99,69 +113,131 @@
 
                         @for ($i = 0; $i < $maxRows; $i++)
                             <tr class="border-b border-slate-100 hover:bg-slate-50">
+                            <td class="pl-10 py-2 border-r border-slate-200">
+                                {{ $aset_lancar[$i]->nama_akun ?? '' }}
+                            </td>
+                            <td class="text-right px-6 py-2 border-r border-slate-200">
+                                {{ isset($aset_lancar[$i]) ? 'Rp ' . number_format($aset_lancar[$i]->saldo, 0, ',', '.') : '' }}
+                            </td>
+                            <td class="pl-10 py-2 border-r border-slate-200">
+                                {{ $liabilitas[$i]->nama_akun ?? '' }}
+                            </td>
+                            <td class="text-right px-6 py-2">
+                                {{ isset($liabilitas[$i]) ? 'Rp ' . number_format($liabilitas[$i]->saldo, 0, ',', '.') : '' }}
+                            </td>
+                            </tr>
+                            @endfor
+
+                            <tr class="bg-slate-100 font-bold border-t border-b border-slate-200">
+                                <td class="px-6 py-3 border-r border-slate-200">Total Aset Lancar</td>
+                                <td class="text-right px-6 py-3 border-r border-slate-200">
+                                    Rp {{ number_format($total_aset_lancar, 0, ',', '.') }}
+                                </td>
+                                <td class="px-6 py-3 border-r border-slate-200">Total Liabilitas</td>
+                                <td class="text-right px-6 py-3">
+                                    Rp {{ number_format($total_liabilitas, 0, ',', '.') }}
+                                </td>
+                            </tr>
+
+                            {{-- ================= ASET TETAP & EKUITAS ================= --}}
+                            <tr class="bg-gray-50 font-semibold border-t border-slate-200">
+                                <td colspan="2" class="px-6 py-3 border-r border-slate-200">Aset Tetap</td>
+                                <td colspan="2" class="px-6 py-3">Ekuitas</td>
+                            </tr>
+
+                            @php
+                            $maxRows2 = max(count($aset_tetap), count($ekuitas));
+                            @endphp
+
+                            @for ($i = 0; $i < $maxRows2; $i++)
+                                <tr class="border-b border-slate-100 hover:bg-slate-50">
                                 <td class="pl-10 py-2 border-r border-slate-200">
-                                    {{ $aset_lancar[$i]->nama_akun ?? '' }}
+                                    {{ $aset_tetap[$i]->nama_akun ?? '' }}
                                 </td>
                                 <td class="text-right px-6 py-2 border-r border-slate-200">
-                                    {{ isset($aset_lancar[$i]) ? 'Rp ' . number_format($aset_lancar[$i]->saldo, 0, ',', '.') : '' }}
-                                </td>
+                                    @if(isset($aset_tetap[$i]))
+                                    @php
+                                    $saldo = $aset_tetap[$i]->saldo;
+                                    $isKontraAset = in_array($aset_tetap[$i]->kode_akun, ['1301']); // sesuaikan
+                                    if($isKontraAset && $saldo > 0){
+                                    $saldo = -1 * $saldo; // tampilkan sebagai negatif jika akun kontra
+                                    }
+                                    @endphp
+
+                                    @if($saldo < 0)
+                                        (Rp {{ number_format(abs($saldo), 0, ',', '.') }})
+                                        @else
+                                        Rp {{ number_format($saldo, 0, ',', '.') }}
+                                        @endif
+                                        @endif
+                                        </td>
                                 <td class="pl-10 py-2 border-r border-slate-200">
-                                    {{ $liabilitas[$i]->nama_akun ?? '' }}
+                                    {{ $ekuitas[$i]->nama_akun ?? '' }}
                                 </td>
                                 <td class="text-right px-6 py-2">
-                                    {{ isset($liabilitas[$i]) ? 'Rp ' . number_format($liabilitas[$i]->saldo, 0, ',', '.') : '' }}
-                                </td>
-                            </tr>
-                        @endfor
+                                    @if(isset($ekuitas[$i]))
+                                    @php
+                                    $saldo = $ekuitas[$i]->saldo;
+                                    $isPrive = $ekuitas[$i]->kode_akun === '3103'; // prive
+                                    if($isPrive && $saldo > 0){
+                                    $saldo = -1 * $saldo; // tampilkan sebagai negatif
+                                    }
+                                    @endphp
 
-                        <tr class="bg-slate-100 font-bold border-t border-b border-slate-200">
-                            <td class="px-6 py-3 border-r border-slate-200">Total Aset Lancar</td>
-                            <td class="text-right px-6 py-3 border-r border-slate-200">Rp {{ number_format($total_aset_lancar, 0, ',', '.') }}</td>
-                            <td class="px-6 py-3 border-r border-slate-200">Total Liabilitas</td>
-                            <td class="text-right px-6 py-3">Rp {{ number_format($total_liabilitas, 0, ',', '.') }}</td>
-                        </tr>
+                                    @if($saldo < 0)
+                                        (Rp {{ number_format(abs($saldo), 0, ',', '.') }})
+                                        @else
+                                        Rp {{ number_format($saldo, 0, ',', '.') }}
+                                        @endif
+                                        @endif
+                                        </td>
+                                        </tr>
+                                        @endfor
 
-                        <tr class="bg-gray-50 font-semibold border-t border-slate-200">
-                            <td colspan="2" class="px-6 py-3 border-r border-slate-200">Aset Tetap</td>
-                            <td colspan="2" class="px-6 py-3">Ekuitas</td>
-                        </tr>
+                                        <tr class="bg-slate-100 font-bold border-t border-b border-slate-200">
+                                            <td class="px-6 py-3 border-r border-slate-200">Total Aset Tetap</td>
+                                            <td class="text-right px-6 py-3 border-r border-slate-200">
+                                                Rp {{ number_format($total_aset_tetap, 0, ',', '.') }}
+                                            </td>
+                                            <td class="px-6 py-3 border-r border-slate-200">Total Ekuitas</td>
+                                            <td class="text-right px-6 py-3">
+                                                Rp {{ number_format($total_ekuitas, 0, ',', '.') }}
+                                            </td>
+                                        </tr>
 
-                        @php
-                        $maxRows2 = max(count($aset_tetap), count($ekuitas));
-                        @endphp
+                                        {{-- ================= TOTAL ================= --}}
+                                        <tr class="bg-blue-100 font-extrabold border-t-2 border-slate-700">
+                                            <td class="px-6 py-4 border-r border-slate-200 uppercase">Total Aset</td>
+                                            <td class="text-right px-6 py-4 border-r border-slate-200">
+                                                Rp {{ number_format($total_aset, 0, ',', '.') }}
+                                            </td>
+                                            <td class="px-6 py-4 border-r border-slate-200 uppercase">Total Liabilitas & Ekuitas</td>
+                                            <td class="text-right px-6 py-4">
+                                                Rp {{ number_format($total_liabilitas_ekuitas, 0, ',', '.') }}
+                                            </td>
+                                        </tr>
 
-                        @for ($i = 0; $i < $maxRows2; $i++)
-                            <tr class="border-b border-slate-100 hover:bg-slate-50">
-                                <td class="pl-10 py-2 border-r border-slate-200">{{ $aset_tetap[$i]->nama_akun ?? '' }}</td>
-                                <td class="text-right px-6 py-2 border-r border-slate-200">{{ isset($aset_tetap[$i]) ? 'Rp ' . number_format($aset_tetap[$i]->saldo, 0, ',', '.') : '' }}</td>
-                                <td class="pl-10 py-2 border-r border-slate-200">{{ $ekuitas[$i]->nama_akun ?? '' }}</td>
-                                <td class="text-right px-6 py-2">{{ isset($ekuitas[$i]) ? 'Rp ' . number_format($ekuitas[$i]->saldo, 0, ',', '.') : '' }}</td>
-                            </tr>
-                        @endfor
-
-                        <tr class="bg-slate-100 font-bold border-t border-b border-slate-200">
-                            <td class="px-6 py-3 border-r border-slate-200">Total Aset Tetap</td>
-                            <td class="text-right px-6 py-3 border-r border-slate-200">Rp {{ number_format($total_aset_tetap, 0, ',', '.') }}</td>
-                            <td class="px-6 py-3 border-r border-slate-200">Total Ekuitas</td>
-                            <td class="text-right px-6 py-3">Rp {{ number_format($total_ekuitas, 0, ',', '.') }}</td>
-                        </tr>
-
-                        <tr class="bg-blue-100 font-extrabold border-t-2 border-slate-700">
-                            <td class="px-6 py-4 border-r border-slate-200 uppercase">Total Aset</td>
-                            <td class="text-right px-6 py-4 border-r border-slate-200">Rp {{ number_format($total_aset, 0, ',', '.') }}</td>
-                            <td class="px-6 py-4 border-r border-slate-200 uppercase">Total Liabilitas & Ekuitas</td>
-                            <td class="text-right px-6 py-4">Rp {{ number_format($total_liabilitas_ekuitas, 0, ',', '.') }}</td>
-                        </tr>
-
-                        <tr class="{{ $total_aset == $total_liabilitas_ekuitas ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} font-extrabold text-center border-t-2 border-slate-700">
-                            <td colspan="4" class="py-4">
-                                {{ $total_aset == $total_liabilitas_ekuitas ? '✅ Neraca Seimbang' : '⚠️ Neraca Tidak Seimbang. Selisih: Rp ' . number_format(abs($total_aset - $total_liabilitas_ekuitas), 0, ',', '.') }}
-                            </td>
-                        </tr>
+                                        <tr class="{{ $total_aset == $total_liabilitas_ekuitas ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} font-extrabold text-center border-t-2 border-slate-700">
+                                            <td colspan="4" class="py-4">
+                                                {{ $total_aset == $total_liabilitas_ekuitas
+                            ? '✅ Neraca Seimbang'
+                            : '⚠️ Neraca Tidak Seimbang. Selisih: Rp ' . number_format(abs($total_aset - $total_liabilitas_ekuitas), 0, ',', '.') }}
+                                            </td>
+                                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+        @else
+        {{-- Pesan jika belum difilter --}}
+        <div class="text-center py-10 text-gray-500 border border-slate-200 rounded-2xl bg-white shadow">
+            Silakan pilih <strong>Periode Bulan & Tahun</strong> dan tekan tombol
+            <strong>Filter</strong> untuk menampilkan <strong>Neraca</strong>.
+        </div>
+        @endif
+
+
 
     </div>
 </div>

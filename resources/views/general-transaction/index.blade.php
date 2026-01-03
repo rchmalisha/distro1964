@@ -45,8 +45,13 @@
                             </td>
 
                             <td class="px-6 py-3 border">
+                                @if($transaction->kode_akun === '5101')
+                                Pembelian Kantong Kresek
+                                @else
                                 {{ $transaction->account->nama_akun ?? 'Akun Tidak Ditemukan' }}
+                                @endif
                             </td>
+
 
                             <td class="px-6 py-3 border text-right">
                                 Rp {{ number_format($transaction->nominal, 0, ',', '.') }}
@@ -116,18 +121,21 @@
                     <select name="kode_akun" class="w-full border rounded-lg px-3 py-2" required>
                         <option value="" disabled selected>Pilih Transaksi</option>
                         @foreach($accounts as $account)
-                        @if($account->kode_akun !== '5101')
                         <option value="{{ $account->kode_akun }}"
                             x-show="
-                    (selectedTransactionType === 'pemasukan' && '{{ $account->kode_akun }}' === '3101') ||
-                    (selectedTransactionType === 'pengeluaran' &&
-                        ('{{ $account->kode_akun }}' === '3103' ||
-                         '{{ $account->kode_akun }}'.startsWith('5')))
-                ">
-                            {{ $account->nama_akun }}
+            (selectedTransactionType === 'pemasukan' && '{{ $account->kode_akun }}' === '3101') ||
+            (selectedTransactionType === 'pengeluaran' &&
+                ('{{ $account->kode_akun }}' === '3103' ||
+                 '{{ $account->kode_akun }}'.startsWith('5')))
+        ">
+                            {{ $account->kode_akun === '5101'
+            ? 'Pembelian Kantong Kresek'
+            : $account->nama_akun
+        }}
                         </option>
-                        @endif
                         @endforeach
+
+
                     </select>
 
                 </div>
@@ -194,19 +202,20 @@
                     <label class="block text-sm font-medium mb-1">Nama Akun</label>
                     <select name="kode_akun" class="w-full border rounded-lg px-3 py-2">
                         @foreach($accounts as $account)
-                        @if($account->kode_akun !== '5101')
                         <option value="{{ $account->kode_akun }}"
-                            {{ $transaction->kode_akun == $account->kode_akun ? 'selected' : '' }}
                             x-show="
-                    (selectedTransactionType === 'pemasukan' && '{{ $account->kode_akun }}' === '3101') ||
-                    (selectedTransactionType === 'pengeluaran' &&
-                        ('{{ $account->kode_akun }}' === '3103' ||
-                         '{{ $account->kode_akun }}'.startsWith('5')))
-                ">
-                            {{ $account->nama_akun }}
+            (selectedTransactionType === 'pemasukan' && '{{ $account->kode_akun }}' === '3101') ||
+            (selectedTransactionType === 'pengeluaran' &&
+                ('{{ $account->kode_akun }}' === '3103' ||
+                 '{{ $account->kode_akun }}'.startsWith('5')))
+        ">
+                            {{ $account->kode_akun === '5101'
+            ? 'Pembelian Kantong Kresek'
+            : $account->nama_akun
+        }}
                         </option>
-                        @endif
                         @endforeach
+
                     </select>
 
                 </div>

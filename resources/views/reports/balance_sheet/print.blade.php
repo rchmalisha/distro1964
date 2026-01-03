@@ -26,79 +26,156 @@
             background: #ddd;
         }
 
-        h2,
-        h4 {
+        h1, h2, h4 {
             text-align: center;
             margin: 0;
+        }
+
+        .bold {
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body onload="window.print()">
+    <h1><strong>DISTRO 1964</strong></h1>
     <h2><strong>Neraca</strong></h2>
+
+    @php
+        \Carbon\Carbon::setLocale('id'); // pastikan locale Indonesia
+    @endphp
+
     @if($month == 'all')
-    <h4>Periode: Januari - Desember {{ $year }}</h4>
+        <h4>Periode: Januari - Desember {{ $year }}</h4>
     @else
-    <h4>Periode: {{ \Carbon\Carbon::createFromDate($year, $month, 1)->translatedFormat('F Y') }}</h4>
+        @php
+            $monthName = \Carbon\Carbon::createFromDate($year, $month, 1)
+                ->locale('id')
+                ->translatedFormat('F Y'); // menampilkan bulan dalam bahasa Indonesia
+        @endphp
+        <h4>Periode: {{ $monthName }}</h4>
     @endif
 
     <table>
         <thead>
             <tr>
                 <th>Aset</th>
-                <th>Jumlah (Rp)</th>
+                <th class="text-right">Jumlah (Rp)</th>
                 <th>Liabilitas & Ekuitas</th>
-                <th>Jumlah (Rp)</th>
+                <th class="text-right">Jumlah (Rp)</th>
             </tr>
         </thead>
+
         <tbody>
-            <tr>
-                <td colspan="2"><strong>Aset Lancar</strong></td>
-                <td colspan="2"><strong>Liabilitas</strong></td>
+            {{-- ================= ASET LANCAR & LIABILITAS ================= --}}
+            <tr class="bold">
+                <td colspan="2">Aset Lancar</td>
+                <td colspan="2">Liabilitas</td>
             </tr>
-            @php $max1 = max(count($aset_lancar), count($liabilitas)); @endphp
-            @for ($i = 0; $i < $max1; $i++)
-                <tr>
-                <td>{{ $aset_lancar[$i]->nama_akun ?? '' }}</td>
-                <td align="right">{{ isset($aset_lancar[$i]) ? number_format($aset_lancar[$i]->saldo, 2, ',', '.') : '' }}</td>
-                <td>{{ $liabilitas[$i]->nama_akun ?? '' }}</td>
-                <td align="right">{{ isset($liabilitas[$i]) ? number_format($liabilitas[$i]->saldo, 2, ',', '.') : '' }}</td>
-                </tr>
-                @endfor
-                <tr>
-                    <td><strong>Total Aset Lancar</strong></td>
-                    <td align="right"><strong>{{ number_format($total_aset_lancar, 2, ',', '.') }}</strong></td>
-                    <td><strong>Total Liabilitas</strong></td>
-                    <td align="right"><strong>{{ number_format($total_liabilitas, 2, ',', '.') }}</strong></td>
-                </tr>
 
+            @php
+            $maxRows = max(count($aset_lancar), count($liabilitas));
+            @endphp
+
+            @for ($i = 0; $i < $maxRows; $i++)
                 <tr>
-                    <td colspan="2"><strong>Aset Tetap</strong></td>
-                    <td colspan="2"><strong>Ekuitas</strong></td>
+                    <td class="pl-10">{{ $aset_lancar[$i]->nama_akun ?? '' }}</td>
+                    <td class="text-right">
+                        @if(isset($aset_lancar[$i]))
+                            @php $saldo = $aset_lancar[$i]->saldo; @endphp
+                            @if($saldo < 0)
+                                (Rp {{ number_format(abs($saldo), 0, ',', '.') }})
+                            @else
+                                Rp {{ number_format($saldo, 0, ',', '.') }}
+                            @endif
+                        @endif
+                    </td>
+                    <td class="pl-10">{{ $liabilitas[$i]->nama_akun ?? '' }}</td>
+                    <td class="text-right">
+                        @if(isset($liabilitas[$i]))
+                            @php $saldo = $liabilitas[$i]->saldo; @endphp
+                            @if($saldo < 0)
+                                (Rp {{ number_format(abs($saldo), 0, ',', '.') }})
+                            @else
+                                Rp {{ number_format($saldo, 0, ',', '.') }}
+                            @endif
+                        @endif
+                    </td>
                 </tr>
-                @php $max2 = max(count($aset_tetap), count($ekuitas)); @endphp
-                @for ($i = 0; $i < $max2; $i++)
-                    <tr>
-                    <td>{{ $aset_tetap[$i]->nama_akun ?? '' }}</td>
-                    <td align="right">{{ isset($aset_tetap[$i]) ? number_format($aset_tetap[$i]->saldo, 2, ',', '.') : '' }}</td>
-                    <td>{{ $ekuitas[$i]->nama_akun ?? '' }}</td>
-                    <td align="right">{{ isset($ekuitas[$i]) ? number_format($ekuitas[$i]->saldo, 2, ',', '.') : '' }}</td>
-                    </tr>
-                    @endfor
+            @endfor
 
-                    <tr>
-                        <td><strong>Total Aset Tetap</strong></td>
-                        <td align="right"><strong>{{ number_format($total_aset_tetap, 2, ',', '.') }}</strong></td>
-                        <td><strong>Total Ekuitas</strong></td>
-                        <td align="right"><strong>{{ number_format($total_ekuitas, 2, ',', '.') }}</strong></td>
-                    </tr>
+            {{-- Total Aset Lancar & Liabilitas --}}
+            <tr class="bold">
+                <td>Total Aset Lancar</td>
+                <td class="text-right">Rp {{ number_format($total_aset_lancar, 0, ',', '.') }}</td>
+                <td>Total Liabilitas</td>
+                <td class="text-right">Rp {{ number_format($total_liabilitas, 0, ',', '.') }}</td>
+            </tr>
 
-                    <tr>
-                        <td><strong>Total Aset</strong></td>
-                        <td align="right"><strong>{{ number_format($total_aset, 2, ',', '.') }}</strong></td>
-                        <td><strong>Total Liabilitas & Ekuitas</strong></td>
-                        <td align="right"><strong>{{ number_format($total_liabilitas_ekuitas, 2, ',', '.') }}</strong></td>
-                    </tr>
+            {{-- ================= ASET TETAP & EKUITAS ================= --}}
+            <tr class="bold">
+                <td colspan="2">Aset Tetap</td>
+                <td colspan="2">Ekuitas</td>
+            </tr>
+
+            @php
+            $maxRows2 = max(count($aset_tetap), count($ekuitas));
+            @endphp
+
+            @for ($i = 0; $i < $maxRows2; $i++)
+                <tr>
+                    <td class="pl-10">{{ $aset_tetap[$i]->nama_akun ?? '' }}</td>
+                    <td class="text-right">
+                        @if(isset($aset_tetap[$i]))
+                            @php
+                            $saldo = $aset_tetap[$i]->saldo;
+                            $isKontraAset = in_array($aset_tetap[$i]->kode_akun, ['1301']); 
+                            if($isKontraAset && $saldo > 0){
+                                $saldo = -1 * $saldo;
+                            }
+                            @endphp
+                            @if($saldo < 0)
+                                (Rp {{ number_format(abs($saldo), 0, ',', '.') }})
+                            @else
+                                Rp {{ number_format($saldo, 0, ',', '.') }}
+                            @endif
+                        @endif
+                    </td>
+                    <td class="pl-10">{{ $ekuitas[$i]->nama_akun ?? '' }}</td>
+                    <td class="text-right">
+                        @if(isset($ekuitas[$i]))
+                            @php
+                            $saldo = $ekuitas[$i]->saldo;
+                            $isPrive = $ekuitas[$i]->kode_akun === '3103';
+                            if($isPrive && $saldo > 0){
+                                $saldo = -1 * $saldo;
+                            }
+                            @endphp
+                            @if($saldo < 0)
+                                (Rp {{ number_format(abs($saldo), 0, ',', '.') }})
+                            @else
+                                Rp {{ number_format($saldo, 0, ',', '.') }}
+                            @endif
+                        @endif
+                    </td>
+                </tr>
+            @endfor
+
+            {{-- Total Aset Tetap & Ekuitas --}}
+            <tr class="bold">
+                <td>Total Aset Tetap</td>
+                <td class="text-right">Rp {{ number_format($total_aset_tetap, 0, ',', '.') }}</td>
+                <td>Total Ekuitas</td>
+                <td class="text-right">Rp {{ number_format($total_ekuitas, 0, ',', '.') }}</td>
+            </tr>
+
+            {{-- ================= TOTAL ================= --}}
+            <tr class="bold">
+                <td>Total Aset</td>
+                <td class="text-right">Rp {{ number_format($total_aset, 0, ',', '.') }}</td>
+                <td>Total Liabilitas & Ekuitas</td>
+                <td class="text-right">Rp {{ number_format($total_liabilitas_ekuitas, 0, ',', '.') }}</td>
+            </tr>
         </tbody>
     </table>
 </body>

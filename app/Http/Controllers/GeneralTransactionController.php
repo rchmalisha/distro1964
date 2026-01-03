@@ -28,9 +28,9 @@ class GeneralTransactionController extends Controller
             ->get();
 
         $accounts = Account::where(function ($q) {
-                $q->where('kode_akun', '3101')
-                  ->orWhere('kode_akun', '3103')
-                  ->orWhere('kode_akun', 'like', '5%');
+                $q->where('kode_akun', '3101')   // modal
+                  ->orWhere('kode_akun', '3103') // prive
+                  ->orWhere('kode_akun', 'like', '5%'); // beban (termasuk 5101)
             })
             ->orderBy('kode_akun')
             ->get();
@@ -39,7 +39,7 @@ class GeneralTransactionController extends Controller
     }
 
     /* ===============================
-     * VALIDATION RULES
+     * VALIDATION
      * =============================== */
     private function validateRequest(Request $request)
     {
@@ -49,10 +49,13 @@ class GeneralTransactionController extends Controller
             'kode_akun' => [
                 'required',
                 function ($attr, $value, $fail) use ($request) {
+
+                    // PEMASUKAN → hanya modal
                     if ($request->jenis_transaksi === 'pemasukan' && $value !== '3101') {
                         $fail('Pemasukan hanya boleh menggunakan akun Modal Pemilik.');
                     }
 
+                    // PENGELUARAN → prive atau beban
                     if (
                         $request->jenis_transaksi === 'pengeluaran' &&
                         !($value === '3103' || str_starts_with($value, '5'))
@@ -75,9 +78,13 @@ class GeneralTransactionController extends Controller
 
         DB::transaction(function () use ($request) {
 
-            $transaction = GeneralTransaction::create($request->only([
-                'tanggal','jenis_transaksi','kode_akun','nominal','keterangan'
-            ]));
+            $transaction = GeneralTransaction::create([
+                'tanggal'          => $request->tanggal,
+                'jenis_transaksi'  => $request->jenis_transaksi,
+                'kode_akun'        => $request->kode_akun,
+                'nominal'          => $request->nominal,
+                'keterangan'       => $request->keterangan,
+            ]);
 
             $this->createJournal($request, $transaction->id);
         });
@@ -86,7 +93,7 @@ class GeneralTransactionController extends Controller
     }
 
     /* ===============================
-     * UPDATE (TIDAK DUPLIKASI)
+     * UPDATE (TANPA DUPLIKASI)
      * =============================== */
     public function update(Request $request, $id)
     {
@@ -96,21 +103,20 @@ class GeneralTransactionController extends Controller
 
             $transaction = GeneralTransaction::findOrFail($id);
 
-            // 1. Update transaksi (TANPA CREATE BARU)
-            $transaction->update($request->only([
-                'tanggal','jenis_transaksi','kode_akun','nominal','keterangan'
-            ]));
+            $transaction->update([
+                'tanggal'          => $request->tanggal,
+                'jenis_transaksi'  => $request->jenis_transaksi,
+                'kode_akun'        => $request->kode_akun,
+                'nominal'          => $request->nominal,
+                'keterangan'       => $request->keterangan,
+            ]);
 
-            // 2. Hapus jurnal lama
-            $oldJournal = GeneralJournal::where('ref_tipe', 'general_transaction')
+            // hapus jurnal lama
+            GeneralJournal::where('ref_tipe', 'general_transaction')
                 ->where('ref_id', $transaction->id)
-                ->first();
+                ->delete();
 
-            if ($oldJournal) {
-                $oldJournal->delete(); // detail ikut terhapus (cascade)
-            }
-
-            // 3. Buat jurnal baru
+            // buat jurnal baru
             $this->createJournal($request, $transaction->id);
         });
 
@@ -118,12 +124,15 @@ class GeneralTransactionController extends Controller
     }
 
     /* ===============================
-     * CREATE JOURNAL (REUSABLE)
+     * CREATE JOURNAL (FINAL LOGIC)
      * =============================== */
     private function createJournal(Request $request, $refId)
     {
         $akun = Account::where('kode_akun', $request->kode_akun)->first();
 
+        /** ===============================
+         * PEMASUKAN
+         * =============================== */
         if ($request->jenis_transaksi === 'pemasukan') {
 
             $entries = [
@@ -133,18 +142,36 @@ class GeneralTransactionController extends Controller
 
             $keteranganJurnal = 'Tambahan Modal Pemilik';
 
-        } else {
+        } 
+        /** ===============================
+         * PENGELUARAN
+         * =============================== */
+        else {
 
             $entries = [
                 ['kode_akun' => $request->kode_akun, 'posisi' => 'debit',  'nominal' => $request->nominal],
                 ['kode_akun' => '1101', 'posisi' => 'kredit', 'nominal' => $request->nominal],
             ];
 
-            if (str_starts_with($request->kode_akun, '5')) {
+            // KHUSUS PEMBELIAN KANTONG KRESEK
+            if ($request->kode_akun === '5101') {
+
+                $keteranganJurnal = 'Pembelian Kantong Kresek'
+                    . ($request->keterangan ? ' - ' . $request->keterangan : '');
+
+            }
+            // BEBAN LAIN
+            elseif (str_starts_with($request->kode_akun, '5')) {
+
                 $keteranganJurnal = 'Pembayaran ' . $akun->nama_akun
                     . ($request->keterangan ? ' - ' . $request->keterangan : '');
-            } else {
+
+            }
+            // PRIVE
+            else {
+
                 $keteranganJurnal = 'Pengambilan Prive Pemilik';
+
             }
         }
 
@@ -164,17 +191,11 @@ class GeneralTransactionController extends Controller
     {
         DB::transaction(function () use ($id) {
 
-            $transaction = GeneralTransaction::findOrFail($id);
+            GeneralJournal::where('ref_tipe', 'general_transaction')
+                ->where('ref_id', $id)
+                ->delete();
 
-            $journal = GeneralJournal::where('ref_tipe', 'general_transaction')
-                ->where('ref_id', $transaction->id)
-                ->first();
-
-            if ($journal) {
-                $journal->delete();
-            }
-
-            $transaction->delete();
+            GeneralTransaction::findOrFail($id)->delete();
         });
 
         return redirect()->back()->with('success', 'Transaksi berhasil dihapus');

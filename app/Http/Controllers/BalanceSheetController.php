@@ -7,6 +7,7 @@ use App\Models\Account;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\ProfitLossService;
 
 class BalanceSheetController extends Controller
 {
@@ -24,12 +25,12 @@ class BalanceSheetController extends Controller
             $month = 'all';
         }
 
-        // Ambil semua akun termasuk saldo_normal
+        // Ambil semua akun
         $accounts = Account::select('id', 'kode_akun', 'nama_akun', 'jenis_akun', 'saldo_awal', 'saldo_normal')
             ->get()
             ->keyBy('kode_akun');
 
-        // Saldo awal berjalan (transaksi sebelum periode)
+        // Saldo awal + mutasi periode
         $saldoAwalTambahan = DB::table('general_journal_details as d')
             ->join('general_journals as j', 'j.id', '=', 'd.general_journal_id')
             ->where('j.tanggal_jurnal', '<', $startDate)
@@ -43,7 +44,6 @@ class BalanceSheetController extends Controller
             ->get()
             ->keyBy('kode_akun');
 
-        // Mutasi periode terpilih
         $journalMutations = DB::table('general_journal_details as d')
             ->join('general_journals as j', 'j.id', '=', 'd.general_journal_id')
             ->whereBetween('j.tanggal_jurnal', [$startDate, $endDate])
@@ -56,7 +56,7 @@ class BalanceSheetController extends Controller
             ->get()
             ->keyBy('kode_akun');
 
-        // Hitung saldo tiap akun dengan memperhatikan saldo_normal
+        // Hitung saldo akun normal
         foreach ($accounts as $akun) {
             $awal = $saldoAwalTambahan->get($akun->kode_akun);
             $mutasi = $journalMutations->get($akun->kode_akun);
@@ -66,18 +66,36 @@ class BalanceSheetController extends Controller
             $mutasi_debit  = $mutasi->total_debit ?? 0;
             $mutasi_kredit = $mutasi->total_kredit ?? 0;
 
-            // Hitung net mutasi + saldo awal berdasarkan saldo_normal
             if (strtolower($akun->saldo_normal) === 'debit') {
-                // normal debit: saldo = saldo_awal + (debit - kredit)
-                $akun->saldo = ($akun->saldo_awal ?? 0)
-                    + ($awal_debit - $awal_kredit)
-                    + ($mutasi_debit - $mutasi_kredit);
+                $akun->saldo = ($akun->saldo_awal ?? 0) + ($awal_debit - $awal_kredit) + ($mutasi_debit - $mutasi_kredit);
             } else {
-                // normal kredit: saldo = saldo_awal + (kredit - debit)
-                $akun->saldo = ($akun->saldo_awal ?? 0)
-                    + ($awal_kredit - $awal_debit)
-                    + ($mutasi_kredit - $mutasi_debit);
+                $akun->saldo = ($akun->saldo_awal ?? 0) + ($awal_kredit - $awal_debit) + ($mutasi_kredit - $mutasi_debit);
             }
+        }
+
+        // Hitung saldo kumulatif laba/rugi untuk akun 3102
+        $labaAkun = $accounts->get('3102');
+        if ($labaAkun) {
+            $kumulatifLaba = 0;
+
+            if ($month !== 'all') {
+                // Loop dari Januari sampai bulan yang dipilih
+                for ($m = 1; $m <= (int)$month; $m++) {
+                    $plService = new ProfitLossService($m, $year);
+                    $result = $plService->calculate();
+                    $kumulatifLaba += $result['laba_rugi'] ?? 0;
+                }
+            } else {
+                // Semua bulan
+                for ($m = 1; $m <= 12; $m++) {
+                    $plService = new ProfitLossService($m, $year);
+                    $result = $plService->calculate();
+                    $kumulatifLaba += $result['laba_rugi'] ?? 0;
+                }
+            }
+
+            // Tambahkan saldo awal akun 3102
+            $labaAkun->saldo = ($labaAkun->saldo_awal ?? 0) + $kumulatifLaba;
         }
 
         // Kelompokkan
@@ -86,21 +104,23 @@ class BalanceSheetController extends Controller
         $liabilitas  = $accounts->where('jenis_akun', 'liabilitas')->values();
         $ekuitas     = $accounts->where('jenis_akun', 'ekuitas')->values();
 
-        // Hitung total aset (positif sesuai saldo yang dihitung)
+        // Hitung total aset
         $total_aset_lancar = $aset_lancar->sum('saldo');
-        $total_aset_tetap  = $aset_tetap->sum('saldo');
+        $total_aset_tetap  = 0;
+        foreach ($aset_tetap as $a) {
+            $kontribusi = (strtolower($a->saldo_normal) === 'kredit') ? -1 * $a->saldo : $a->saldo;
+            $total_aset_tetap += $kontribusi;
+        }
 
-        // Hitung total liabilitas & ekuitas dengan memperhatikan akun debit-normal yang harus mengurangi
+        // Total liabilitas & ekuitas
         $total_liabilitas = 0;
         foreach ($liabilitas as $a) {
-            $kontribusi = (strtolower($a->saldo_normal) === 'debit') ? -1 * $a->saldo : $a->saldo;
-            $total_liabilitas += $kontribusi;
+            $total_liabilitas += (strtolower($a->saldo_normal) === 'debit') ? -1 * $a->saldo : $a->saldo;
         }
 
         $total_ekuitas = 0;
         foreach ($ekuitas as $a) {
-            $kontribusi = (strtolower($a->saldo_normal) === 'debit') ? -1 * $a->saldo : $a->saldo;
-            $total_ekuitas += $kontribusi;
+            $total_ekuitas += (strtolower($a->saldo_normal) === 'debit') ? -1 * $a->saldo : $a->saldo;
         }
 
         $total_aset = $total_aset_lancar + $total_aset_tetap;
@@ -124,24 +144,24 @@ class BalanceSheetController extends Controller
 
     public function print(Request $request)
     {
-        // Sama dengan index, pastikan select saldo_normal juga diambil
         $month = $request->get('month');
         $year  = $request->get('year') ?? date('Y');
 
-        if (!empty($month) && $month !== 'all') {
-            $startDate = Carbon::createFromDate((int)$year, (int)$month, 1)->startOfMonth();
-            $endDate   = Carbon::createFromDate((int)$year, (int)$month, 1)->endOfMonth();
-            $monthName = Carbon::createFromDate($year, $month, 1)->locale('id')->translatedFormat('F');
-        } else {
-            $startDate = Carbon::createFromDate((int)$year, 1, 1)->startOfYear();
-            $endDate   = Carbon::createFromDate((int)$year, 12, 31)->endOfYear();
-            $month = 'all';
-            $monthName = 'Januari-Desember';
-        }
+        $monthName = $month !== 'all'
+            ? Carbon::createFromDate($year, $month, 1)->locale('id')->translatedFormat('F')
+            : 'Januari-Desember';
 
         $accounts = Account::select('id', 'kode_akun', 'nama_akun', 'jenis_akun', 'saldo_awal', 'saldo_normal')
             ->get()
             ->keyBy('kode_akun');
+
+        $startDate = $month !== 'all'
+            ? Carbon::createFromDate((int)$year, (int)$month, 1)->startOfMonth()
+            : Carbon::createFromDate((int)$year, 1, 1)->startOfYear();
+
+        $endDate = $month !== 'all'
+            ? Carbon::createFromDate((int)$year, (int)$month, 1)->endOfMonth()
+            : Carbon::createFromDate((int)$year, 12, 31)->endOfYear();
 
         $journalMutations = DB::table('general_journal_details as d')
             ->join('general_journals as j', 'j.id', '=', 'd.general_journal_id')
@@ -167,13 +187,40 @@ class BalanceSheetController extends Controller
             }
         }
 
+        // Hitung kumulatif laba/rugi akun 3102
+        $labaAkun = $accounts->get('3102');
+        if ($labaAkun) {
+            $kumulatifLaba = 0;
+
+            if ($month !== 'all') {
+                for ($m = 1; $m <= (int)$month; $m++) {
+                    $plService = new ProfitLossService($m, $year);
+                    $result = $plService->calculate();
+                    $kumulatifLaba += $result['laba_rugi'] ?? 0;
+                }
+            } else {
+                for ($m = 1; $m <= 12; $m++) {
+                    $plService = new ProfitLossService($m, $year);
+                    $result = $plService->calculate();
+                    $kumulatifLaba += $result['laba_rugi'] ?? 0;
+                }
+            }
+
+            $labaAkun->saldo = ($labaAkun->saldo_awal ?? 0) + $kumulatifLaba;
+        }
+
+        // Kelompokkan
         $aset_lancar = $accounts->where('jenis_akun', 'aset lancar')->values();
         $aset_tetap  = $accounts->where('jenis_akun', 'aset tetap')->values();
         $liabilitas  = $accounts->where('jenis_akun', 'liabilitas')->values();
         $ekuitas     = $accounts->where('jenis_akun', 'ekuitas')->values();
 
         $total_aset_lancar = $aset_lancar->sum('saldo');
-        $total_aset_tetap  = $aset_tetap->sum('saldo');
+        $total_aset_tetap = 0;
+        foreach ($aset_tetap as $a) {
+            $kontribusi = (strtolower($a->saldo_normal) === 'kredit') ? -1 * $a->saldo : $a->saldo;
+            $total_aset_tetap += $kontribusi;
+        }
 
         $total_liabilitas = 0;
         foreach ($liabilitas as $a) {
@@ -188,11 +235,6 @@ class BalanceSheetController extends Controller
         $total_aset = $total_aset_lancar + $total_aset_tetap;
         $total_liabilitas_ekuitas = $total_liabilitas + $total_ekuitas;
 
-        if ($month !== 'all') {
-            $monthName = Carbon::createFromDate($year, $month, 1)->locale('id')->translatedFormat('F');
-        } else {
-            $monthName = 'Januari-Desember';
-        }
         $fileName = "Neraca_{$monthName}_{$year}.pdf";
 
         return view('reports.balance_sheet.print', compact(
@@ -211,12 +253,5 @@ class BalanceSheetController extends Controller
             'monthName',
             'fileName'
         ));
-    }
-
-    // getBalanceSheetData: jika dipakai, ubah dengan logika yang sama seperti index di atas
-    private function getBalanceSheetData($month, $year)
-    {
-        // Anda bisa implementasikan sama persis seperti index() agar konsisten
-        return $this->index(request()); // atau duplikasi logika jika butuh return data bukan view
     }
 }

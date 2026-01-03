@@ -42,8 +42,6 @@ class AkunSeeder extends Seeder
             ['kode_akun' => '3101', 'nama_akun' => 'Modal Pemilik', 'jenis_akun' => 'ekuitas', 'saldo_awal' => 1445000],
             ['kode_akun' => '3102', 'nama_akun' => 'Laba', 'jenis_akun' => 'ekuitas', 'saldo_awal' => 1435000],
             ['kode_akun' => '3103', 'nama_akun' => 'Prive Pemilik', 'jenis_akun' => 'ekuitas', 'saldo_awal' => 1000000],
-            ['kode_akun' => '3104', 'nama_akun' => 'Laba/Rugi Tahun Berjalan', 'jenis_akun' => 'ekuitas', 'saldo_awal' => 0],
-            ['kode_akun' => '3105', 'nama_akun' => 'Ikhtisar Laba Rugi', 'jenis_akun' => 'ekuitas', 'saldo_awal' => 0],
 
             // === Pendapatan ===
             ['kode_akun' => '4101', 'nama_akun' => 'Penjualan', 'jenis_akun' => 'pendapatan', 'saldo_awal' => 0],
