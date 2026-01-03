@@ -24,7 +24,7 @@
                         <tr>
                             <th class="px-6 py-3 border text-left">Tanggal</th>
                             <th class="px-6 py-3 border text-left">Jenis Transaksi</th>
-                            <th class="px-6 py-3 border text-left">Nama Akun</th>
+                            <th class="px-6 py-3 border text-left">Nama Transaksi</th>
                             <th class="px-6 py-3 border text-right">Nominal</th>
                             <th class="px-6 py-3 border text-left">Keterangan</th>
                             <th class="px-6 py-3 border text-center">Aksi</th>
@@ -52,7 +52,7 @@
                                 Rp {{ number_format($transaction->nominal, 0, ',', '.') }}
                             </td>
 
-                                                        <td class="px-6 py-3 border">
+                            <td class="px-6 py-3 border">
                                 {{ $transaction->keterangan ?? '-' }}
                             </td>
 
@@ -112,21 +112,24 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-1">Nama Akun</label>
+                    <label class="block text-sm font-medium mb-1">Nama Transaksi</label>
                     <select name="kode_akun" class="w-full border rounded-lg px-3 py-2" required>
-                        <option value="" disabled selected>Pilih Akun</option>
+                        <option value="" disabled selected>Pilih Transaksi</option>
                         @foreach($accounts as $account)
+                        @if($account->kode_akun !== '5101')
                         <option value="{{ $account->kode_akun }}"
                             x-show="
-                                (selectedTransactionType === 'pemasukan' && '{{ $account->kode_akun }}' === '3101') ||
-                                (selectedTransactionType === 'pengeluaran' &&
-                                    ('{{ $account->kode_akun }}' === '3102' ||
-                                     '{{ $account->kode_akun }}'.startsWith('5')))
-                            ">
-                            {{ $account->nama_akun }} ({{ $account->kode_akun }})
+                    (selectedTransactionType === 'pemasukan' && '{{ $account->kode_akun }}' === '3101') ||
+                    (selectedTransactionType === 'pengeluaran' &&
+                        ('{{ $account->kode_akun }}' === '3103' ||
+                         '{{ $account->kode_akun }}'.startsWith('5')))
+                ">
+                            {{ $account->nama_akun }}
                         </option>
+                        @endif
                         @endforeach
                     </select>
+
                 </div>
 
                 <div>
@@ -191,18 +194,21 @@
                     <label class="block text-sm font-medium mb-1">Nama Akun</label>
                     <select name="kode_akun" class="w-full border rounded-lg px-3 py-2">
                         @foreach($accounts as $account)
+                        @if($account->kode_akun !== '5101')
                         <option value="{{ $account->kode_akun }}"
                             {{ $transaction->kode_akun == $account->kode_akun ? 'selected' : '' }}
                             x-show="
-                                (selectedTransactionType === 'pemasukan' && '{{ $account->kode_akun }}' === '3101') ||
-                                (selectedTransactionType === 'pengeluaran' &&
-                                    ('{{ $account->kode_akun }}' === '3102' ||
-                                     '{{ $account->kode_akun }}'.startsWith('5')))
-                            ">
-                            {{ $account->nama_akun }} ({{ $account->kode_akun }})
+                    (selectedTransactionType === 'pemasukan' && '{{ $account->kode_akun }}' === '3101') ||
+                    (selectedTransactionType === 'pengeluaran' &&
+                        ('{{ $account->kode_akun }}' === '3103' ||
+                         '{{ $account->kode_akun }}'.startsWith('5')))
+                ">
+                            {{ $account->nama_akun }}
                         </option>
+                        @endif
                         @endforeach
                     </select>
+
                 </div>
 
                 <div>

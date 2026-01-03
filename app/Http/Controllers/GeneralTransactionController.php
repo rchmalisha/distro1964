@@ -29,7 +29,7 @@ class GeneralTransactionController extends Controller
 
         $accounts = Account::where(function ($q) {
                 $q->where('kode_akun', '3101')
-                  ->orWhere('kode_akun', '3102')
+                  ->orWhere('kode_akun', '3103')
                   ->orWhere('kode_akun', 'like', '5%');
             })
             ->orderBy('kode_akun')
@@ -55,7 +55,7 @@ class GeneralTransactionController extends Controller
 
                     if (
                         $request->jenis_transaksi === 'pengeluaran' &&
-                        !($value === '3102' || str_starts_with($value, '5'))
+                        !($value === '3103' || str_starts_with($value, '5'))
                     ) {
                         $fail('Pengeluaran hanya boleh menggunakan akun Prive atau Beban.');
                     }

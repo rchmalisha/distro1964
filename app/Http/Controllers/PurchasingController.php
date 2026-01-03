@@ -75,7 +75,7 @@ class PurchasingController extends Controller
                 keterangan: 'Pembelian bahan habis pakai - ' . $purchasing->nama_bahan,
                 entries: [
                     [
-                        'kode_akun' => '5105',     // Beban Bahan Habis Pakai
+                        'kode_akun' => '5101',     // Beban Bahan Habis Pakai
                         'posisi' => 'debit',
                         'nominal' => $validated['total_harga'],
                     ],
